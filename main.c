@@ -434,27 +434,30 @@ int main(){
     allElements[0].CurrentHPEffect.Quantity = 0;
     allElements[0].CurrentHPEffect.Timer = 0;
     //------------------//
-    strcpy(allElements[0].StatusEffect[0].Acronym, "Def");
-    allElements[0].StatusEffect[0].Quantity = 0;
+    strcpy(allElements[0].StatusEffect[0].Acronym, "HP");
+    allElements[0].StatusEffect[0].Quantity = 0; 
     allElements[0].StatusEffect[0].Timer = 0;
-    strcpy(allElements[0].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[0].StatusEffect[1].Acronym, "Def");
     allElements[0].StatusEffect[1].Quantity = 0;
     allElements[0].StatusEffect[1].Timer = 0;
-    strcpy(allElements[0].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[0].StatusEffect[2].Acronym, "MaD");
     allElements[0].StatusEffect[2].Quantity = 0;
     allElements[0].StatusEffect[2].Timer = 0;
-    strcpy(allElements[0].StatusEffect[3].Acronym, "Atk");
+    strcpy(allElements[0].StatusEffect[3].Acronym, "Acc");
     allElements[0].StatusEffect[3].Quantity = 0;
-    allElements[0].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[0].StatusEffect[4].Acronym, "ElA");
+    allElements[0].StatusEffect[3].Timer = 0;
+    strcpy(allElements[0].StatusEffect[4].Acronym, "Atk");
     allElements[0].StatusEffect[4].Quantity = 0;
-    allElements[0].StatusEffect[4].Timer = 0;
-    strcpy(allElements[0].StatusEffect[5].Acronym, "MaA");
+    allElements[0].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[0].StatusEffect[5].Acronym, "EAc");
     allElements[0].StatusEffect[5].Quantity = 0;
     allElements[0].StatusEffect[5].Timer = 0;
-    strcpy(allElements[0].StatusEffect[6].Acronym, "Spd");
-    allElements[0].StatusEffect[6].Quantity = -100;
-    allElements[0].StatusEffect[6].Timer = 3;
+    strcpy(allElements[0].StatusEffect[6].Acronym, "MaA");
+    allElements[0].StatusEffect[6].Quantity = 0;
+    allElements[0].StatusEffect[6].Timer = 0;
+    strcpy(allElements[0].StatusEffect[7].Acronym, "Spd");
+    allElements[0].StatusEffect[7].Quantity = -100;
+    allElements[0].StatusEffect[7].Timer = 3;
 
     strcpy(allElements[1].Name, "Flamejante"); 
     strcpy(allElements[1].Acronym, "Qmd");
@@ -476,27 +479,30 @@ int main(){
     allElements[1].CurrentHPEffect.Quantity = -5;
     allElements[1].CurrentHPEffect.Timer = 4;
     //------------------//
-    strcpy(allElements[1].StatusEffect[0].Acronym, "Def");
-    allElements[1].StatusEffect[0].Quantity = 0;
+    strcpy(allElements[1].StatusEffect[0].Acronym, "HP");
+    allElements[1].StatusEffect[0].Quantity = 0; 
     allElements[1].StatusEffect[0].Timer = 0;
-    strcpy(allElements[1].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[1].StatusEffect[1].Acronym, "Def");
     allElements[1].StatusEffect[1].Quantity = 0;
     allElements[1].StatusEffect[1].Timer = 0;
-    strcpy(allElements[1].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[1].StatusEffect[2].Acronym, "MaD");
     allElements[1].StatusEffect[2].Quantity = 0;
     allElements[1].StatusEffect[2].Timer = 0;
-    strcpy(allElements[1].StatusEffect[3].Acronym, "Atk");
-    allElements[1].StatusEffect[3].Quantity = -15;
-    allElements[1].StatusEffect[3].Timer = 4; 
-    strcpy(allElements[1].StatusEffect[4].Acronym, "EAc");
-    allElements[1].StatusEffect[4].Quantity = 0;
-    allElements[1].StatusEffect[4].Timer = 0;
-    strcpy(allElements[1].StatusEffect[5].Acronym, "MaA");
+    strcpy(allElements[1].StatusEffect[3].Acronym, "Acc");
+    allElements[1].StatusEffect[3].Quantity = 0;
+    allElements[1].StatusEffect[3].Timer = 0;
+    strcpy(allElements[1].StatusEffect[4].Acronym, "Atk");
+    allElements[1].StatusEffect[4].Quantity = -15;
+    allElements[1].StatusEffect[4].Timer = 4; 
+    strcpy(allElements[1].StatusEffect[5].Acronym, "EAc");
     allElements[1].StatusEffect[5].Quantity = 0;
     allElements[1].StatusEffect[5].Timer = 0;
-    strcpy(allElements[1].StatusEffect[6].Acronym, "Spd");
+    strcpy(allElements[1].StatusEffect[6].Acronym, "MaA");
     allElements[1].StatusEffect[6].Quantity = 0;
     allElements[1].StatusEffect[6].Timer = 0;
+    strcpy(allElements[1].StatusEffect[7].Acronym, "Spd");
+    allElements[1].StatusEffect[7].Quantity = 0;
+    allElements[1].StatusEffect[7].Timer = 0;
 
     strcpy(allElements[2].Name, "Aquático"); 
     strcpy(allElements[2].Acronym, "Mol");
@@ -518,27 +524,32 @@ int main(){
     allElements[2].CurrentHPEffect.Quantity = 0;
     allElements[2].CurrentHPEffect.Timer = 0;
     //------------------//
-    strcpy(allElements[2].StatusEffect[0].Acronym, "Def");
-    allElements[2].StatusEffect[0].Quantity = -15;
-    allElements[2].StatusEffect[0].Timer = 3;
-    strcpy(allElements[2].StatusEffect[1].Acronym, "MaD");
+
+    strcpy(allElements[2].StatusEffect[0].Acronym, "HP");
+    allElements[2].StatusEffect[0].Quantity = 0; 
+    allElements[2].StatusEffect[0].Timer = 0;
+    strcpy(allElements[3].StatusEffect[1].Acronym, "Def");
     allElements[2].StatusEffect[1].Quantity = -15;
     allElements[2].StatusEffect[1].Timer = 3;
-    strcpy(allElements[2].StatusEffect[2].Acronym, "Acc");
-    allElements[2].StatusEffect[2].Quantity = 0;
-    allElements[2].StatusEffect[2].Timer = 0;
-    strcpy(allElements[2].StatusEffect[3].Acronym, "Atk");
+    strcpy(allElements[2].StatusEffect[2].Acronym, "MaD");
+    allElements[2].StatusEffect[2].Quantity = -15;
+    allElements[2].StatusEffect[2].Timer = 3;
+    strcpy(allElements[2].StatusEffect[3].Acronym, "Acc");
     allElements[2].StatusEffect[3].Quantity = 0;
-    allElements[2].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[2].StatusEffect[4].Acronym, "EAc");
+    allElements[2].StatusEffect[3].Timer = 0;
+    strcpy(allElements[2].StatusEffect[4].Acronym, "Atk");
     allElements[2].StatusEffect[4].Quantity = 0;
-    allElements[2].StatusEffect[4].Timer = 0;
-    strcpy(allElements[2].StatusEffect[5].Acronym, "MaA");
+    allElements[2].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[2].StatusEffect[5].Acronym, "EAc");
     allElements[2].StatusEffect[5].Quantity = 0;
     allElements[2].StatusEffect[5].Timer = 0;
-    strcpy(allElements[2].StatusEffect[6].Acronym, "Spd");
+    strcpy(allElements[2].StatusEffect[6].Acronym, "MaA");
     allElements[2].StatusEffect[6].Quantity = 0;
     allElements[2].StatusEffect[6].Timer = 0;
+    strcpy(allElements[2].StatusEffect[7].Acronym, "Spd");
+    allElements[2].StatusEffect[7].Quantity = 0;
+    allElements[2].StatusEffect[7].Timer = 0;
+
  
     strcpy(allElements[3].Name, "Natural"); 
     strcpy(allElements[3].Acronym, "Erz");
@@ -560,27 +571,31 @@ int main(){
     allElements[3].CurrentHPEffect.Quantity = 0;
     allElements[3].CurrentHPEffect.Timer = 0;
     //------------------//
-    strcpy(allElements[3].StatusEffect[0].Acronym, "Def");
-    allElements[3].StatusEffect[0].Quantity = 0;
+
+    strcpy(allElements[3].StatusEffect[0].Acronym, "HP");
+    allElements[3].StatusEffect[0].Quantity = 0; 
     allElements[3].StatusEffect[0].Timer = 0;
-    strcpy(allElements[3].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[3].StatusEffect[1].Acronym, "Def");
     allElements[3].StatusEffect[1].Quantity = 0;
     allElements[3].StatusEffect[1].Timer = 0;
-    strcpy(allElements[3].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[3].StatusEffect[2].Acronym, "MaD");
     allElements[3].StatusEffect[2].Quantity = 0;
     allElements[3].StatusEffect[2].Timer = 0;
-    strcpy(allElements[3].StatusEffect[3].Acronym, "Atk");
-    allElements[3].StatusEffect[3].Quantity = -10;
-    allElements[3].StatusEffect[3].Timer = 4; 
-    strcpy(allElements[3].StatusEffect[4].Acronym, "EAc");
-    allElements[3].StatusEffect[4].Quantity = 0;
-    allElements[3].StatusEffect[4].Timer = 0;
-    strcpy(allElements[3].StatusEffect[5].Acronym, "MaA");
-    allElements[3].StatusEffect[5].Quantity = -10;
+    strcpy(allElements[3].StatusEffect[3].Acronym, "Acc");
+    allElements[3].StatusEffect[3].Quantity = 0;
+    allElements[3].StatusEffect[3].Timer = 0;
+    strcpy(allElements[3].StatusEffect[4].Acronym, "Atk");
+    allElements[3].StatusEffect[4].Quantity = -10;
+    allElements[3].StatusEffect[4].Timer = 4; 
+    strcpy(allElements[3].StatusEffect[5].Acronym, "EAc");
+    allElements[3].StatusEffect[5].Quantity = 0;
     allElements[3].StatusEffect[5].Timer = 0;
-    strcpy(allElements[3].StatusEffect[6].Acronym, "Spd");
-    allElements[3].StatusEffect[6].Quantity = -15;
-    allElements[3].StatusEffect[6].Timer = 3;
+    strcpy(allElements[3].StatusEffect[6].Acronym, "MaA");
+    allElements[3].StatusEffect[6].Quantity = -10;
+    allElements[3].StatusEffect[6].Timer = 4;
+    strcpy(allElements[3].StatusEffect[7].Acronym, "Spd");
+    allElements[3].StatusEffect[7].Quantity = -15;
+    allElements[3].StatusEffect[7].Timer = 3;
 
     strcpy(allElements[4].Name, "Elétrico"); 
     strcpy(allElements[4].Acronym, "Prz");
@@ -602,27 +617,30 @@ int main(){
     allElements[4].CurrentHPEffect.Quantity = -5;
     allElements[4].CurrentHPEffect.Timer = 3;
     //------------------//
-    strcpy(allElements[4].StatusEffect[0].Acronym, "Def");
-    allElements[4].StatusEffect[0].Quantity = 0;
+    strcpy(allElements[4].StatusEffect[0].Acronym, "HP");
+    allElements[4].StatusEffect[0].Quantity = 0; 
     allElements[4].StatusEffect[0].Timer = 0;
-    strcpy(allElements[4].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[4].StatusEffect[1].Acronym, "Def");
     allElements[4].StatusEffect[1].Quantity = 0;
     allElements[4].StatusEffect[1].Timer = 0;
-    strcpy(allElements[4].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[4].StatusEffect[2].Acronym, "MaD");
     allElements[4].StatusEffect[2].Quantity = 0;
     allElements[4].StatusEffect[2].Timer = 0;
-    strcpy(allElements[4].StatusEffect[3].Acronym, "Atk");
+    strcpy(allElements[4].StatusEffect[3].Acronym, "Acc");
     allElements[4].StatusEffect[3].Quantity = 0;
-    allElements[4].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[4].StatusEffect[4].Acronym, "EAc");
+    allElements[4].StatusEffect[3].Timer = 0;
+    strcpy(allElements[4].StatusEffect[4].Acronym, "Atk");
     allElements[4].StatusEffect[4].Quantity = 0;
-    allElements[4].StatusEffect[4].Timer = 0;
-    strcpy(allElements[4].StatusEffect[5].Acronym, "MaA");
+    allElements[4].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[4].StatusEffect[5].Acronym, "EAc");
     allElements[4].StatusEffect[5].Quantity = 0;
     allElements[4].StatusEffect[5].Timer = 0;
-    strcpy(allElements[4].StatusEffect[6].Acronym, "Spd");
-    allElements[4].StatusEffect[6].Quantity = -15;
-    allElements[4].StatusEffect[6].Timer = 3;
+    strcpy(allElements[4].StatusEffect[6].Acronym, "MaA");
+    allElements[4].StatusEffect[6].Quantity = 0;
+    allElements[4].StatusEffect[6].Timer = 0;
+    strcpy(allElements[4].StatusEffect[7].Acronym, "Spd");
+    allElements[4].StatusEffect[7].Quantity = -15;
+    allElements[4].StatusEffect[7].Timer = 3;
 
     strcpy(allElements[5].Name, "Misterioso"); 
     strcpy(allElements[5].Acronym, "Asb");
@@ -644,27 +662,31 @@ int main(){
     allElements[5].CurrentHPEffect.Quantity = -4;
     allElements[5].CurrentHPEffect.Timer = 5;
     //------------------//
-    strcpy(allElements[5].StatusEffect[0].Acronym, "Def");
-    allElements[5].StatusEffect[0].Quantity = 0;
+
+    strcpy(allElements[5].StatusEffect[0].Acronym, "HP");
+    allElements[5].StatusEffect[0].Quantity = 0; 
     allElements[5].StatusEffect[0].Timer = 0;
-    strcpy(allElements[5].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[5].StatusEffect[1].Acronym, "Def");
     allElements[5].StatusEffect[1].Quantity = 0;
     allElements[5].StatusEffect[1].Timer = 0;
-    strcpy(allElements[5].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[5].StatusEffect[2].Acronym, "MaD");
     allElements[5].StatusEffect[2].Quantity = 0;
     allElements[5].StatusEffect[2].Timer = 0;
-    strcpy(allElements[5].StatusEffect[3].Acronym, "Atk");
+    strcpy(allElements[5].StatusEffect[3].Acronym, "Acc");
     allElements[5].StatusEffect[3].Quantity = 0;
-    allElements[5].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[5].StatusEffect[4].Acronym, "EAc");
+    allElements[5].StatusEffect[3].Timer = 0;
+    strcpy(allElements[5].StatusEffect[4].Acronym, "Atk");
     allElements[5].StatusEffect[4].Quantity = 0;
-    allElements[5].StatusEffect[4].Timer = 0;
-    strcpy(allElements[5].StatusEffect[5].Acronym, "MaA");
-    allElements[5].StatusEffect[5].Quantity = -15;
-    allElements[5].StatusEffect[5].Timer = 5;
-    strcpy(allElements[5].StatusEffect[6].Acronym, "Spd");
-    allElements[5].StatusEffect[6].Quantity = 0;
-    allElements[5].StatusEffect[6].Timer = 0;
+    allElements[5].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[5].StatusEffect[5].Acronym, "EAc");
+    allElements[5].StatusEffect[5].Quantity = 0;
+    allElements[5].StatusEffect[5].Timer = 0;
+    strcpy(allElements[5].StatusEffect[6].Acronym, "MaA");
+    allElements[5].StatusEffect[6].Quantity = -15;
+    allElements[5].StatusEffect[6].Timer = 5;
+    strcpy(allElements[5].StatusEffect[7].Acronym, "Spd");
+    allElements[5].StatusEffect[7].Quantity = 0;
+    allElements[5].StatusEffect[7].Timer = 0;
 
     strcpy(allElements[6].Name, "Luminoso"); 
     strcpy(allElements[6].Acronym, "Clr");
@@ -686,27 +708,31 @@ int main(){
     allElements[6].CurrentHPEffect.Quantity = 0;
     allElements[6].CurrentHPEffect.Timer = 0;
     //------------------//
-    strcpy(allElements[6].StatusEffect[0].Acronym, "Def");
-    allElements[6].StatusEffect[0].Quantity = 0;
+
+    strcpy(allElements[6].StatusEffect[0].Acronym, "HP");
+    allElements[6].StatusEffect[0].Quantity = 0; 
     allElements[6].StatusEffect[0].Timer = 0;
-    strcpy(allElements[6].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[6].StatusEffect[1].Acronym, "Def");
     allElements[6].StatusEffect[1].Quantity = 0;
     allElements[6].StatusEffect[1].Timer = 0;
-    strcpy(allElements[6].StatusEffect[2].Acronym, "Acc");
-    allElements[6].StatusEffect[2].Quantity = -20;
-    allElements[6].StatusEffect[2].Timer = 2;
-    strcpy(allElements[6].StatusEffect[3].Acronym, "Atk");
-    allElements[6].StatusEffect[3].Quantity = 0;
-    allElements[6].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[6].StatusEffect[4].Acronym, "EAc");
-    allElements[6].StatusEffect[4].Quantity = -20;
-    allElements[6].StatusEffect[4].Timer = 2;
-    strcpy(allElements[6].StatusEffect[5].Acronym, "MaA");
-    allElements[6].StatusEffect[5].Quantity = -15;
-    allElements[6].StatusEffect[5].Timer = 5;
-    strcpy(allElements[6].StatusEffect[6].Acronym, "Spd");
+    strcpy(allElements[6].StatusEffect[2].Acronym, "MaD");
+    allElements[6].StatusEffect[2].Quantity = 0;
+    allElements[6].StatusEffect[2].Timer = 0;
+    strcpy(allElements[6].StatusEffect[3].Acronym, "Acc");
+    allElements[6].StatusEffect[3].Quantity = -20;
+    allElements[6].StatusEffect[3].Timer = 2;
+    strcpy(allElements[6].StatusEffect[4].Acronym, "Atk");
+    allElements[6].StatusEffect[4].Quantity = 0;
+    allElements[6].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[6].StatusEffect[5].Acronym, "EAc");
+    allElements[6].StatusEffect[5].Quantity = -20;
+    allElements[6].StatusEffect[5].Timer = 2;
+    strcpy(allElements[6].StatusEffect[6].Acronym, "MaA");
     allElements[6].StatusEffect[6].Quantity = 0;
     allElements[6].StatusEffect[6].Timer = 0;
+    strcpy(allElements[6].StatusEffect[7].Acronym, "Spd");
+    allElements[6].StatusEffect[7].Quantity = 0;
+    allElements[6].StatusEffect[7].Timer = 0;
 
     strcpy(allElements[7].Name, "Gélido"); 
     strcpy(allElements[7].Acronym, "Cal");
@@ -728,27 +754,31 @@ int main(){
     allElements[7].CurrentHPEffect.Quantity = -10;
     allElements[7].CurrentHPEffect.Timer = 2;
     //------------------//
-    strcpy(allElements[7].StatusEffect[0].Acronym, "Def");
-    allElements[7].StatusEffect[0].Quantity = 0;
+
+    strcpy(allElements[7].StatusEffect[0].Acronym, "HP");
+    allElements[7].StatusEffect[0].Quantity = 0; 
     allElements[7].StatusEffect[0].Timer = 0;
-    strcpy(allElements[7].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[7].StatusEffect[1].Acronym, "Def");
     allElements[7].StatusEffect[1].Quantity = 0;
     allElements[7].StatusEffect[1].Timer = 0;
-    strcpy(allElements[7].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[7].StatusEffect[2].Acronym, "MaD");
     allElements[7].StatusEffect[2].Quantity = 0;
     allElements[7].StatusEffect[2].Timer = 0;
-    strcpy(allElements[7].StatusEffect[3].Acronym, "Atk");
+    strcpy(allElements[7].StatusEffect[3].Acronym, "Acc");
     allElements[7].StatusEffect[3].Quantity = 0;
-    allElements[7].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[7].StatusEffect[4].Acronym, "EAc");
+    allElements[7].StatusEffect[3].Timer = 0;
+    strcpy(allElements[7].StatusEffect[4].Acronym, "Atk");
     allElements[7].StatusEffect[4].Quantity = 0;
-    allElements[7].StatusEffect[4].Timer = 0;
-    strcpy(allElements[7].StatusEffect[5].Acronym, "MaA");
+    allElements[7].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[7].StatusEffect[5].Acronym, "EAc");
     allElements[7].StatusEffect[5].Quantity = 0;
     allElements[7].StatusEffect[5].Timer = 0;
-    strcpy(allElements[7].StatusEffect[6].Acronym, "Spd");
-    allElements[7].StatusEffect[6].Quantity = -30;
-    allElements[7].StatusEffect[6].Timer = 3;
+    strcpy(allElements[7].StatusEffect[6].Acronym, "MaA");
+    allElements[7].StatusEffect[6].Quantity = 0;
+    allElements[7].StatusEffect[6].Timer = 0;
+    strcpy(allElements[7].StatusEffect[7].Acronym, "Spd");
+    allElements[7].StatusEffect[7].Quantity = -15;
+    allElements[7].StatusEffect[7].Timer = 3;
 
     strcpy(allElements[8].Name, "Mineral"); 
     strcpy(allElements[8].Acronym, "Sot");
@@ -770,27 +800,31 @@ int main(){
     allElements[8].CurrentHPEffect.Quantity = 0;
     allElements[8].CurrentHPEffect.Timer = 0;
     //------------------//
-    strcpy(allElements[8].StatusEffect[0].Acronym, "Def");
-    allElements[8].StatusEffect[0].Quantity = 0;
+
+    strcpy(allElements[8].StatusEffect[0].Acronym, "HP");
+    allElements[8].StatusEffect[0].Quantity = 0; 
     allElements[8].StatusEffect[0].Timer = 0;
-    strcpy(allElements[8].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[8].StatusEffect[1].Acronym, "Def");
     allElements[8].StatusEffect[1].Quantity = 0;
     allElements[8].StatusEffect[1].Timer = 0;
-    strcpy(allElements[8].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[8].StatusEffect[2].Acronym, "MaD");
     allElements[8].StatusEffect[2].Quantity = 0;
     allElements[8].StatusEffect[2].Timer = 0;
-    strcpy(allElements[8].StatusEffect[3].Acronym, "Atk");
+    strcpy(allElements[8].StatusEffect[3].Acronym, "Acc");
     allElements[8].StatusEffect[3].Quantity = 0;
-    allElements[8].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[8].StatusEffect[4].Acronym, "EAc");
+    allElements[8].StatusEffect[3].Timer = 0;
+    strcpy(allElements[8].StatusEffect[4].Acronym, "Atk");
     allElements[8].StatusEffect[4].Quantity = 0;
-    allElements[8].StatusEffect[4].Timer = 0;
-    strcpy(allElements[8].StatusEffect[5].Acronym, "MaA");
+    allElements[8].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[8].StatusEffect[5].Acronym, "EAc");
     allElements[8].StatusEffect[5].Quantity = 0;
     allElements[8].StatusEffect[5].Timer = 0;
-    strcpy(allElements[8].StatusEffect[6].Acronym, "Spd");
-    allElements[8].StatusEffect[6].Quantity = -30;
-    allElements[8].StatusEffect[6].Timer = 2;
+    strcpy(allElements[8].StatusEffect[6].Acronym, "MaA");
+    allElements[8].StatusEffect[6].Quantity = 0;
+    allElements[8].StatusEffect[6].Timer = 0;
+    strcpy(allElements[8].StatusEffect[7].Acronym, "Spd");
+    allElements[8].StatusEffect[7].Quantity = -30;
+    allElements[8].StatusEffect[7].Timer = 1;
 
     strcpy(allElements[9].Name, "Venenoso"); 
     strcpy(allElements[9].Acronym, "Ven");
@@ -812,27 +846,32 @@ int main(){
     allElements[9].CurrentHPEffect.Quantity = -15;
     allElements[9].CurrentHPEffect.Timer = 5;
     //------------------//
-    strcpy(allElements[9].StatusEffect[0].Acronym, "Def");
-    allElements[9].StatusEffect[0].Quantity = 0;
+
+    strcpy(allElements[9].StatusEffect[0].Acronym, "HP");
+    allElements[9].StatusEffect[0].Quantity = 0; 
     allElements[9].StatusEffect[0].Timer = 0;
-    strcpy(allElements[9].StatusEffect[1].Acronym, "MaD");
+    strcpy(allElements[9].StatusEffect[1].Acronym, "Def");
     allElements[9].StatusEffect[1].Quantity = 0;
     allElements[9].StatusEffect[1].Timer = 0;
-    strcpy(allElements[9].StatusEffect[2].Acronym, "Acc");
+    strcpy(allElements[9].StatusEffect[2].Acronym, "MaD");
     allElements[9].StatusEffect[2].Quantity = 0;
     allElements[9].StatusEffect[2].Timer = 0;
-    strcpy(allElements[9].StatusEffect[3].Acronym, "Atk");
+    strcpy(allElements[9].StatusEffect[3].Acronym, "Acc");
     allElements[9].StatusEffect[3].Quantity = 0;
-    allElements[9].StatusEffect[3].Timer = 0; 
-    strcpy(allElements[9].StatusEffect[4].Acronym, "EAc");
+    allElements[9].StatusEffect[3].Timer = 0;
+    strcpy(allElements[9].StatusEffect[4].Acronym, "Atk");
     allElements[9].StatusEffect[4].Quantity = 0;
-    allElements[9].StatusEffect[4].Timer = 0;
-    strcpy(allElements[9].StatusEffect[5].Acronym, "MaA");
+    allElements[9].StatusEffect[4].Timer = 0; 
+    strcpy(allElements[9].StatusEffect[5].Acronym, "EAc");
     allElements[9].StatusEffect[5].Quantity = 0;
     allElements[9].StatusEffect[5].Timer = 0;
-    strcpy(allElements[9].StatusEffect[6].Acronym, "Spd");
+    strcpy(allElements[9].StatusEffect[6].Acronym, "MaA");
     allElements[9].StatusEffect[6].Quantity = 0;
     allElements[9].StatusEffect[6].Timer = 0;
+    strcpy(allElements[9].StatusEffect[7].Acronym, "Spd");
+    allElements[9].StatusEffect[7].Quantity = 0;
+    allElements[9].StatusEffect[7].Timer = 0;
+
     SaveElements(allElements, elements);
     */
 
@@ -2206,7 +2245,9 @@ int main(){
 
     //------------------------------------------------------------------------------------------------------------------//
 
-
+    DebugElements(allElements, -1);
+    getchar();
+    getchar();
     //Principal Do Usuário
     //------------------------------------------------------------------------------------------------------------------//
     int respostaUserMP;
