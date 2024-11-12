@@ -196,7 +196,7 @@ bool SavePlayers(PlPointer pPlayers, int playersQuantity, const char *destino);
 void FreeAllHeapMemoryAndSaveEverything(SkPointer pSkills, ItPointer pItems, PiPointer pPikomons, PlPointer *pPlayers, DataQuantity dataquantities, const char *dataQuantity, const char *skills, const char *items, const char *pikomoms, const char *players);
 bool AddSkill(SkPointer *pSkills, DataQuantity *dataQuantities, char *name, char *type, char description[3][255], char *active, char activeDescription[3][255], bool learnablePersonalities[13], bool LearnableElements[10], int elementEffectHitChance, Element element, char target, int hitChance, int  attackBase, int attackScale, int magicBase, int magicAttackScale, int critChance, char effectTarget, int enemyEffectHitChance, Effect enemyEffect[8], int selfEffectHitChance, Effect selfEffect[8]);
 bool AddItem(ItPointer *pItems, DataQuantity *dataQuantities, char *name, char *type, char description[3][255], char *active, char activeDescription[3][255], int value, bool currentHPDamageIsPysic, char effectCurrentHPTarget, Effect EffectCurrentHP, char effectTarget, int StatusEffectChance, Effect StatusEffect[8]);
-bool AddPikomon(PiPointer *pPikomons, DataQuantity *dataQuantities, char *name, Element element, char iconImg[7][25], char passive[20], char passiveDescription[3][255], int value, int BaseHP, int BaseDefense, int BaseMagicDefense, int BaseAccuracy, int BaseAttack, int BaseElementalAccuracy, int BaseMagicAttack, int BaseSpeed);
+bool AddPikomon(PiPointer pPikomons, DataQuantity *dataQuantities, Pikomon newPikomon);
 bool AddPlayer(PlPointer *pPlayers, DataQuantity *dataQuantities, char *name, char *pass);
 bool AddItemPlayerBag(PlPointer pPlayers, int playerIndex, ItPointer pItems, int itemIndex);;
 bool StorePikomonPlayer(PlPointer *pPlayers, int playerIndex, int storagePikomonPlacementIndex, PiPointer pPikomons, int pikomonIndex, DataQuantity dataQuantities);
@@ -875,8 +875,6 @@ int main(){
     SaveElements(allElements, elements);
     */
 
-    //Itens//
-    
 
 
     dBPersonalities = fopen(personalities, "rb");
@@ -986,10 +984,8 @@ int main(){
     fclose(dBPlayers);
 
 
-//define pikomons
-
-/*
-    char descfds[3][255];
+    //define pikomons//
+    /*char descfds[3][255];
     strcpy(descfds[0], "");
     strcpy(descfds[1], "");
     strcpy(descfds[2], "");
@@ -1521,7 +1517,6 @@ int main(){
     SaveDataQuantity(dataQuantities, dataQuantity);*/
 
     //Skills//
-
     /*strcpy(DescAtiva[0], "");
     strcpy(DescAtiva[1], "");
     strcpy(DescAtiva[2], "");
@@ -2245,9 +2240,6 @@ int main(){
 
     //------------------------------------------------------------------------------------------------------------------//
 
-    DebugElements(allElements, -1);
-    getchar();
-    getchar();
     //Principal Do Usuário
     //------------------------------------------------------------------------------------------------------------------//
     int respostaUserMP;
@@ -2434,29 +2426,20 @@ int main(){
                     printf("TURNO DO P1");
                     selectedPlayerOnePicomon[0].ChargedSpeed += selectedPlayerOnePicomon[0].Atributes[7].Total;
                     while(selectedPlayerOnePicomon[0].ChargedSpeed - turnCost >= 0){
-                        printf("\nTurnCost: %d\n", turnCost);
-                        printf("\nTurnGain: %d\n", selectedPlayerTwoPicomon[0].Atributes[7].Total);
-                        printf("\nPikomonAtual ChargedSpeed: %d\n", selectedPlayerTwoPicomon[0].ChargedSpeed);
                         selectedPlayerOnePicomon[0].ChargedSpeed -= turnCost;
-                        printf("selectedPlayerOnePicomon[0].ChargedSpeed -= turnCost\n");
-                        printf("\nPikomonAtual ChargedSpeed: %d\n", selectedPlayerTwoPicomon[0].ChargedSpeed);
                         if(SkillWasUsed){
                             SkillWasUsed = false;
-                            if (skillHit)
-                                {
-                                    if (critHit)
-                                    {
-                                        printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
-                                    }
-                                    else
-                                    {
-                                        printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
-                                    }
+                            if (skillHit){
+                                if (critHit){
+                                    printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
                                 }
-                                else
-                                {
-                                    printf("O pikomon errou...");
+                                else{
+                                    printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
                                 }
+                            }
+                            else{
+                                printf("O pikomon errou...");
+                            }
                             getchar();
                             getchar();
                         }
@@ -2485,40 +2468,18 @@ int main(){
                                 scanf(" %c", &userResponse);
                                 if(/*escolheu usa skill*/userResponse == '1'){
                                     respostaValida = true;
-                                    printf("Skill(1):\n");
-                                    ShowSkill(&pPlayers[playerOneIndex].BatlePikomons[pPlayers[playerOneIndex].SelectedPikomonIndex].Skills[0]);
-                                    printf("Skill(2):\n");
-                                    ShowSkill(&pPlayers[playerOneIndex].BatlePikomons[pPlayers[playerOneIndex].SelectedPikomonIndex].Skills[1]);
-                                    printf("Skill(3):\n");
-                                    ShowSkill(&pPlayers[playerOneIndex].BatlePikomons[pPlayers[playerOneIndex].SelectedPikomonIndex].Skills[2]);
-                                    printf("Skill(4):\n");
-                                    ShowSkill(&pPlayers[playerOneIndex].BatlePikomons[pPlayers[playerOneIndex].SelectedPikomonIndex].Skills[3]);
+                                    for(int num = 0; num < 4; num++){
+                                        printf("Skill(%d):\n", num);
+                                        ShowSkill(&pPlayers[playerOneIndex].BatlePikomons[pPlayers[playerOneIndex].SelectedPikomonIndex].Skills[num]);
+                                    }
                                     respostaValida2 = false;
                                     while(!respostaValida2){
                                         printf("Escolha uma skill\n");
                                         scanf(" %c", &userResponse);
-                                        if(userResponse == '1'){
+                                        if((int)userResponse - (int)'0' > -1 && (int)userResponse - (int)'0' < 4){
                                             respostaValida2 = true;
                                             SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerOnePicomon, 0, selectedPlayerTwoPicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-                                        }
-                                        else if(userResponse == '2'){
-                                            respostaValida2 = true;
-                                            SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerOnePicomon, 1, selectedPlayerTwoPicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-
-                                        }
-                                        else if(userResponse == '3'){
-                                            respostaValida2 = true;
-                                            SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerOnePicomon, 2, selectedPlayerTwoPicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-
-                                        }
-                                        else if(userResponse == '4'){
-                                            respostaValida2 = true;
-                                            SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerOnePicomon, 3, selectedPlayerTwoPicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-
+                                            CalcSkill(allElements, selectedPlayerOnePicomon, (int)userResponse - (int)'0', selectedPlayerTwoPicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
                                         }
                                         else{
                                             printf("Comando digitado invalido, digite novamente");
@@ -2665,12 +2626,7 @@ int main(){
                     printf("TURNO DO P2");
                     selectedPlayerTwoPicomon[0].ChargedSpeed += selectedPlayerTwoPicomon[0].Atributes[7].Total;
                     while(selectedPlayerTwoPicomon[0].ChargedSpeed - turnCost >= 0){
-                        printf("\nTurnCost: %d\n", turnCost);
-                        printf("\nTurnGain: %d\n", selectedPlayerTwoPicomon[0].Atributes[7].Total);
-                        printf("\nPikomonAtual ChargedSpeed: %d\n", selectedPlayerTwoPicomon[0].ChargedSpeed);
                         selectedPlayerTwoPicomon[0].ChargedSpeed -= turnCost;
-                        printf("selectedPlayerTwoPicomon[0].ChargedSpeed -= turnCost\n");
-                        printf("\nPikomonAtual ChargedSpeed: %d\n", selectedPlayerTwoPicomon[0].ChargedSpeed);
                         if(SkillWasUsed){
                             SkillWasUsed = false;
                             if (skillHit)
@@ -2715,40 +2671,19 @@ int main(){
                                 scanf(" %c", &userResponse);
                                 if(/*escolheu usa skill*/userResponse == '1'){
                                     respostaValida = true;
-                                    printf("Skill(1):\n");
-                                    ShowSkill(&pPlayers[playerTwoIndex].BatlePikomons[pPlayers[playerTwoIndex].SelectedPikomonIndex].Skills[0]);
-                                    printf("Skill(2):\n");
-                                    ShowSkill(&pPlayers[playerTwoIndex].BatlePikomons[pPlayers[playerTwoIndex].SelectedPikomonIndex].Skills[1]);
-                                    printf("Skill(3):\n");
-                                    ShowSkill(&pPlayers[playerTwoIndex].BatlePikomons[pPlayers[playerTwoIndex].SelectedPikomonIndex].Skills[2]);
-                                    printf("Skill(4):\n");
-                                    ShowSkill(&pPlayers[playerTwoIndex].BatlePikomons[pPlayers[playerTwoIndex].SelectedPikomonIndex].Skills[3]);
+                                    for(int num = 0; num < 4; num++){
+                                        printf("Skill(%d):\n", num);
+                                        ShowSkill(&pPlayers[playerTwoIndex].BatlePikomons[pPlayers[playerTwoIndex].SelectedPikomonIndex].Skills[num]);
+
+                                    }
                                     respostaValida2 = false;
                                     while(!respostaValida2){
                                         printf("Escolha uma skill\n");
                                         scanf(" %c", &userResponse);
-                                        if(userResponse == '1'){
+                                        if((int)userResponse - (int)'0' > -1 && (int)userResponse - (int)'0' < 4){
                                             respostaValida2 = true;
                                             SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerTwoPicomon, 0, selectedPlayerOnePicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-                                        }
-                                        else if(userResponse == '2'){
-                                            respostaValida2 = true;
-                                            SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerTwoPicomon, 1, selectedPlayerOnePicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-
-                                        }
-                                        else if(userResponse == '3'){
-                                            respostaValida2 = true;
-                                            SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerTwoPicomon, 2, selectedPlayerOnePicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-
-                                        }
-                                        else if(userResponse == '4'){
-                                            respostaValida2 = true;
-                                            SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerTwoPicomon, 3, selectedPlayerOnePicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
-
+                                            CalcSkill(allElements, selectedPlayerTwoPicomon, (int)userResponse - (int)'0', selectedPlayerOnePicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
                                         }
                                         else{
                                             printf("Comando digitado invalido, digite novamente");
@@ -3511,7 +3446,7 @@ bool ShowSkill(SkPointer skill){
                    skill[0].SelfEffect[k].Timer);
         }
     }
-
+    printf("\n\n");
     return true;
 }
 
@@ -3902,119 +3837,47 @@ bool AddItem(ItPointer *pItems, DataQuantity *dataQuantities, char *name, char *
 
 }
 
-bool AddPikomon(PiPointer *pPikomons, DataQuantity *dataQuantities, char *name, Element element, char iconImg[7][25], char passive[20], char passiveDescription[3][255], int value, int BaseHP, int BaseDefense, int BaseMagicDefense, int BaseAccuracy, int BaseAttack, int BaseElementalAccuracy, int BaseMagicAttack, int BaseSpeed){
+bool AddPikomon(PiPointer pPikomons, DataQuantity *dataQuantities, Pikomon newPikomon){
     if(pPikomons == NULL){
         perror("ERRO, \"pPikomons\" não pode ser NULL em \"AddPikomon\"");
         return false;
     }
-    if(name == NULL){
-        perror("ERRO, \"name\" não pode ser NULL em \"AddPikomon\"");
-        return false;
-    }
-    else if(strlen(name) > 19){
-        perror("ERRO, \"name\" não pode ter mais de 19 caracteres em \"AddPikomon\"");
-        return false;
-    }
-    if(iconImg == NULL){
-        perror("ERRO, \"icoImg\" não pode ser NULL em \"AddPikomon\"");
-        return false;
-    }
-    if(BaseHP == 0){
-        perror("ERRO, \"BaseHP\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
-    if(BaseDefense == 0){
-        perror("ERRO, \"BaseDefense\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
-    if(BaseMagicDefense == 0){
-        perror("ERRO, \"BaseMagicDefense\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
-    if(BaseAccuracy == 0){
-        perror("ERRO, \"BaseAccuracy\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
-    if (BaseAttack == 0) {
-        perror("ERRO, \"BaseAttack\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
-    if(BaseElementalAccuracy == 0){
-        perror("ERRO, \"BaseElementalAccuracy\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
-    if(BaseMagicAttack == 0){
-        perror("ERRO, \"BaseMagicAttack\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
-    if(BaseSpeed == 0){
-        perror("ERRO, \"BaseSpeed\" não pode ser 0 em \"AddPikomon\"");
-        return false;
-    }
 
     dataQuantities[0].Pikomon++;
-    (*pPikomons) = (PiPointer)realloc((*pPikomons), dataQuantities[0].Pikomon * sizeof(Pikomon));
+    pPikomons = (PiPointer)realloc(pPikomons, dataQuantities[0].Pikomon * sizeof(Pikomon));
     if(pPikomons == NULL){
         perror("ERRO na realocacao de memoria em \"AddPikomon\"");
         return false;
     }
-    memset(&(*pPikomons)[dataQuantities[0].Pikomon-1], 0, sizeof(Pikomon));
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Name, name);
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Element = element;
+    memset(&pPikomons[dataQuantities[0].Pikomon-1], 0, sizeof(Pikomon));
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Name, newPikomon.Name);
+    pPikomons[dataQuantities[0].Pikomon-1].Element = newPikomon.Element;
     int i;
     for(i = 0; i < 7; i++){
-        strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].IconImg[i], iconImg[i]);
+        strcpy(pPikomons[dataQuantities[0].Pikomon-1].IconImg[i], newPikomon.IconImg[i]);
     }
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Passive, passive);
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Passive, newPikomon.Passive);
     for(i = 0; i < 3; i++){
-        strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].PassiveDescription[i], passiveDescription[i]);
+        strcpy(pPikomons[dataQuantities[0].Pikomon-1].PassiveDescription[i], newPikomon.PassiveDescription[i]);
     }
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Value = value;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].CurrentHP.Name, "CurrentHP");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].CurrentHP.Base = 0;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].CurrentHP.acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].CurrentHP.Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].CurrentHP.BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[0].Name, "HP");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[0].Base = BaseHP;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[0].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[0].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[0].BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[1].Name, "Defense");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[1].Base = BaseDefense;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[1].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[1].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[1].BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[2].Name, "MagicDefense");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[2].Base = BaseMagicDefense;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[2].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[2].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[2].BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[3].Name, "Accuracy");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[3].Base = BaseAccuracy;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[3].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[3].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[3].BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[4].Name, "Attack");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[4].Base = BaseAttack;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[4].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[4].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[4].BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[5].Name, "ElementalAccuracy");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[5].Base = BaseElementalAccuracy;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[5].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[5].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[5].BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[6].Name, "MagicAttack");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[6].Base = BaseMagicAttack;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[6].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[6].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[6].BonusTimer = NULL;
-    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[7].Name, "Speed");
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[7].Base = BaseSpeed;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[7].acronym = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[7].Bonus = NULL;
-    (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[7].BonusTimer = NULL;
+    pPikomons[dataQuantities[0].Pikomon-1].Value = newPikomon.Value;
+    
+    for(i = 0; i < 8; i++){
+        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].Base = newPikomon.Atributes[i].Base;
+        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].acronym = NULL;
+        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].Bonus = NULL;
+        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].BonusTimer = NULL;
+    }
+    pPikomons[dataQuantities[0].Pikomon-1].CurrentHP.Base = 0;
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].CurrentHP.Name, "CurrentHP");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[0].Name, "HP");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[1].Name, "Defense");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[2].Name, "MagicDefense");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[3].Name, "Accuracy");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[4].Name, "Attack");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[5].Name, "ElementalAccuracy");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[6].Name, "MagicAttack");
+    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[7].Name, "Speed");
     return true;
 }
 
@@ -4267,7 +4130,6 @@ void SelectBattlePikomons(PlPointer player){
 
         if (escolha < 1 || escolha > 12 || strlen(player[0].PikomonsStorage[escolha - 1].Name) == 0) {
             printf("Escolha inválida. Tente novamente.\n");
-            getchar(); 
             getchar();
             k--; 
         } else {
@@ -4278,11 +4140,8 @@ void SelectBattlePikomons(PlPointer player){
             player[0].BatlePikomons[k].CurrentHP.Total = player[0].BatlePikomons[k].Atributes[0].Total;
             player[0].BatlePikomons[k].CurrentHP.Base = player[0].BatlePikomons[k].Atributes[0].Total;
             DebugPikomons(&player[0].BatlePikomons[k], 0, 1);
-            getchar();
-            getchar();
             escolhidos[countEscolhidos++] = escolha - 1; 
             printf("Você escolheu %s para a batalha!\n", player[0].PikomonsStorage[escolha - 1].Name);
-            getchar(); 
             getchar();
         }
     }
@@ -4332,14 +4191,29 @@ void CalcNextTurn(Pikomon selfPikomon, Pikomon enemyPikomon, char *calcNextTurn)
 }
 
 void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPointer defenser, bool *elementalEffectHit, bool *skillHit, bool *critHit, bool *selfEffectHit, bool *enemyEffectHit, int *selfDamage, int *enemyDamage){
-    int I, J, bonusQuantity;
+    int I, J, bonusQuantity, randChance = 0;
     double elementalEffectivness;
     double physicalDamageReduction, magicDamageReduction;
     SkPointer usedSkill = &atacker[0].Skills[skillIndex];
+    *selfDamage = 0;
+    *enemyDamage = 0;
 
+    //Info na chamada da função(para debug)
+    printf("Basic:\n");
+    printf("elementalEffectHit: %s  skillHit: %s   critHit: %s  selfEffectHit: %s  enemyEffectHit: %s\n selfDamage: %d  enemyDamage: %d\n", *elementalEffectHit ? "True":"False", *skillHit ? "True":"False", *critHit ? "True":"False", *selfEffectHit ? "True":"False", *enemyEffectHit ? "True":"False", *selfDamage, *enemyDamage);
+    printf("atacker.Name: %s\n  skillIndex: %d  defenser.Name: %s\n\n", atacker[0].Name, skillIndex, defenser[0].Name);
+    getchar();
+    getchar();
 
-    if(((rand() % 100)+1) <= ((double)usedSkill[0].ElementEffectHitChance) * ((double)atacker[0].Atributes[5].Total)/100.0){
+    randChance = (rand() % 100)+1;
+    printf("elementalEffectHit?\n\n");
+    printf("randChance: %d <= usedSkill[0].ElementEffectHitChance: %d * atacker[0].Atributes[5].Total: %d / 100 ?????", randChance, usedSkill[0].ElementEffectHitChance, atacker[0].Atributes[5].Total);
+    if(randChance <= ((double)usedSkill[0].ElementEffectHitChance) * ((double)atacker[0].Atributes[5].Total)/100.0){
         *elementalEffectHit = true;
+        //Debug
+        printf("elementalEffectHit\n\n");
+        getchar();
+        getchar();
         physicalDamageReduction = 1.0 - (DefenseReductionCalc(defenser[0].Atributes[1].Total) * 0.11);
         magicDamageReduction = 1.0 - (DefenseReductionCalc(defenser[0].Atributes[2].Total) * 0.11);
         elementalEffectivness = (double)usedSkill[0].Element.Effectiveness[defenser[0].Element.SelfElementIndex] / 100.0;
@@ -4374,8 +4248,15 @@ void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoi
     else *elementalEffectHit = false;
 
 
-    if(((rand() % 100)+1) <= (double)atacker[0].Atributes[3].Total * (double)usedSkill[0].HitChance / 100.0){
+    randChance = (rand() % 100)+1;
+    printf("elementalEffectHit?\n\n");
+    printf("randChance: %d <= atacker[0].Atributes[3].Total: %d * usedSkill[0].HitChance: %d / 100 ?????", randChance, atacker[0].Atributes[3].Total, usedSkill[0].HitChance);
+    if(randChance <= (double)atacker[0].Atributes[3].Total * (double)usedSkill[0].HitChance / 100.0){
         *skillHit = true;
+        //Debug
+        printf("skillHit\n\n");
+        getchar();
+        getchar();
         int magicDamage, physicalDamage;
         if((rand() % 100 +1) <= usedSkill[0].CritChance) *critHit = true;
 
@@ -4422,8 +4303,15 @@ void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoi
     else *skillHit = false;
 
 
-    if((rand() % 100 +1 <= usedSkill[0].SelfEffectHitChance)){
+    randChance = (rand() % 100)+1;
+    printf("elementalEffectHit?\n\n");
+    printf("randChance: %d <= usedSkill[0].SelfEffectHitChance: %d ?????", randChance, usedSkill[0].SelfEffectHitChance);
+    if(randChance <= usedSkill[0].SelfEffectHitChance){
         *selfEffectHit = true;
+        //Debug
+        printf("selfEffectHit\n\n");
+        getchar();
+        getchar();
         for (I = 0; I < 8; I++){
             if(usedSkill[0].Element.StatusEffect[I].Timer > 0){
                 atacker[0].Atributes[I].BonusQuantity++;
@@ -4442,8 +4330,15 @@ void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoi
     else *selfEffectHit = false;
 
 
-    if((rand() % 100 +1 <= usedSkill[0].EnemyEffectHitChance)){
+    randChance = (rand() % 100)+1;
+    printf("elementalEffectHit?\n\n");
+    printf("randChance: %d <= usedSkill[0].EnemyEffectHitChance: %d ?????", randChance, usedSkill[0].EnemyEffectHitChance);
+    if(randChance <= usedSkill[0].EnemyEffectHitChance){
         *enemyEffectHit = true;
+        //Debug
+        printf("enemyEffectHit\n\n");
+        getchar();
+        getchar();
         for (I = 0; I < 8; I++){
             if(usedSkill[0].Element.StatusEffect[I].Timer > 0){
                 defenser[0].Atributes[I].BonusQuantity++;
@@ -4460,6 +4355,13 @@ void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoi
         }
     }
     else *enemyEffectHit = false;
+
+    //para debug
+    printf("Basic:\n");
+    printf("elementalEffectHit: %s  skillHit: %s   critHit: %s  selfEffectHit: %s  enemyEffectHit: %s\n selfDamage: %d  enemyDamage: %d\n", *elementalEffectHit ? "True":"False", *skillHit ? "True":"False", *critHit ? "True":"False", *selfEffectHit ? "True":"False", *enemyEffectHit ? "True":"False", *selfDamage, *enemyDamage);
+    printf("atacker.Name: %s\nskillIndex: %d\ndefenser: defenser.Name\n\n", atacker[0].Name, skillIndex, defenser[0].Name);
+    getchar();
+    getchar();
 }
 
 void UseItem(PlPointer selfPlayer, PlPointer enemyPlayer, int itemUsedIndex, bool *usedItemStatusHit){
@@ -4706,6 +4608,7 @@ double DefenseReductionCalc(double value){
     return LNfalso(value) / LNfalso(base);
     return 1.0;
 }
+
 double LNfalso(double x){
     if (x <= 0) {
         return 0;
@@ -4789,7 +4692,6 @@ bool Login(PlPointer pPlayers, int playersQuantity, bool *login1, bool *login2, 
     return true;
 }
 
-
 void Menu(){
     struct timespec tempo;
     tempo.tv_sec = 0;              
@@ -4825,7 +4727,6 @@ nanosleep(&tempo, NULL);
 printf("     *********************************************************\n");
 }
 
-
 void MenuLogin(int userNumero) {
     printf("                ***************************************\n");
     printf("                *                 US%d                 *\n", userNumero);
@@ -4833,11 +4734,9 @@ void MenuLogin(int userNumero) {
     printf("\n");
 }
 
-
 void LimparTerminal() {
     printf("\033[H\033[J");
 }
-
 
 void MenuBattle(Pikomon epPikomon, Pikomon ppPikomon, char *Turnos) {
 
@@ -5056,47 +4955,53 @@ void PrintPikomonEffects(PiPointer pikomon){
 
 void EscolherSkills(Player *player, Skill *Skills, int totalSkills){
     for (int k = 0; k < 6; k++) {
-        printf("%s, escolha as habilidades para %s:\n", player[0].Name, player[0].BatlePikomons[k].Name);
+        if(strlen(player[0].BatlePikomons[k].Name) > 0){
 
-        // Listar habilidades disponíveis para o Pikomon atual
-        int skillCount = 0;
-        for (int i = 0; i < totalSkills; i++) {
-            Skill currentSkill = Skills[i];
-            bool canLearn = currentSkill.LearnableElements[player[0].BatlePikomons[k].Element.SelfElementIndex];
-            
-            if (strlen(currentSkill.Name) > 0 && canLearn) {
-                printf("%d. %s - Tipo: %s\n", i + 1, currentSkill.Name, currentSkill.Type);
-                skillCount++;
-            }
-        }
+            printf("%s, escolha as habilidades para %s:\n", player[0].Name, player[0].BatlePikomons[k].Name);
 
-        // Verificar se há habilidades disponíveis
-        if (skillCount == 0) {
-            printf("Nenhuma habilidade disponível para %s.\n", player[0].BatlePikomons[k].Name);
-            continue; 
-        }
-
-        // Selecionar habilidades para o Pikomon
-        for (int j = 0; j < 4; j++) {
-            printf("Digite o número da habilidade %d para %s: ", j + 1, player[0].BatlePikomons[k].Name);
-            int escolha;
-            scanf("%d", &escolha);
-
-            if (escolha < 1 || escolha > totalSkills) {
-                printf("Escolha inválida. Tente novamente.\n");
-                j--; 
-            } else {
-                Skill chosenSkill = Skills[escolha - 1];
-                bool isValidSkill = chosenSkill.LearnableElements[player[0].BatlePikomons[k].Element.SelfElementIndex];
-
-                if (!isValidSkill) {
-                    printf("Habilidade não aprendível por este Pikomon. Tente novamente.\n");
-                    j--; 
-                } else {
-                    player[0].BatlePikomons[k].Skills[j] = chosenSkill; 
-                    printf("Habilidade %s selecionada para %s!\n", chosenSkill.Name, player[0].BatlePikomons[k].Name);
+            // Listar habilidades disponíveis para o Pikomon atual
+            int skillCount = 0;
+            for (int i = 0; i < totalSkills; i++) {
+                Skill currentSkill = Skills[i];
+                bool canLearn = currentSkill.LearnableElements[player[0].BatlePikomons[k].Element.SelfElementIndex];
+                
+                if (strlen(currentSkill.Name) > 0 && canLearn) {
+                    printf("%d. %s - Tipo: %s\n", i + 1, currentSkill.Name, currentSkill.Type);
+                    skillCount++;
                 }
             }
+
+            // Verificar se há habilidades disponíveis
+            if (skillCount == 0) {
+                printf("Nenhuma habilidade disponível para %s.\n", player[0].BatlePikomons[k].Name);
+                continue; 
+            }
+
+            // Selecionar habilidades para o Pikomon
+            for (int j = 0; j < 4; j++) {
+                printf("Digite o número da habilidade %d para %s: ", j + 1, player[0].BatlePikomons[k].Name);
+                int escolha;
+                scanf("%d", &escolha);
+
+                if (escolha < 1 || escolha > totalSkills) {
+                    printf("Escolha inválida. Tente novamente.\n");
+                    j--; 
+                } else {
+                    Skill chosenSkill = Skills[escolha - 1];
+                    bool isValidSkill = chosenSkill.LearnableElements[player[0].BatlePikomons[k].Element.SelfElementIndex];
+
+                    if (!isValidSkill) {
+                        printf("Habilidade não aprendível por este Pikomon. Tente novamente.\n");
+                        j--; 
+                    } else {
+                        player[0].BatlePikomons[k].Skills[j] = chosenSkill; 
+                        printf("Habilidade %s selecionada para %s!\n", chosenSkill.Name, player[0].BatlePikomons[k].Name);
+                    }
+                }
+            }
+        }
+        else{
+            printf("O index %d não possiu pikomon\n\n", k);
         }
     }
 }
