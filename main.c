@@ -194,11 +194,11 @@ bool SaveItems(ItPointer pItems, int ItemsQuantity, const char *destino);
 bool SavePikomons(PiPointer pPikomons, int pikomonsQuantity, const char *destino);
 bool SavePlayers(PlPointer pPlayers, int playersQuantity, const char *destino);
 void FreeAllHeapMemoryAndSaveEverything(SkPointer pSkills, ItPointer pItems, PiPointer pPikomons, PlPointer *pPlayers, DataQuantity dataquantities, const char *dataQuantity, const char *skills, const char *items, const char *pikomoms, const char *players);
-bool AddSkill(SkPointer *pSkills, DataQuantity *dataQuantities, char *name, char *type, char description[3][255], char *active, char activeDescription[3][255], bool learnablePersonalities[13], bool LearnableElements[10], int elementEffectHitChance, Element element, char target, int hitChance, int  attackBase, int attackScale, int magicBase, int magicAttackScale, int critChance, char effectTarget, int enemyEffectHitChance, Effect enemyEffect[8], int selfEffectHitChance, Effect selfEffect[8]);
+bool AddSkill(SkPointer *pSkills, DataQuantity *dataQuantities, Skill newSkill);
 bool AddItem(ItPointer *pItems, DataQuantity *dataQuantities, char *name, char *type, char description[3][255], char *active, char activeDescription[3][255], int value, bool currentHPDamageIsPysic, char effectCurrentHPTarget, Effect EffectCurrentHP, char effectTarget, int StatusEffectChance, Effect StatusEffect[8]);
-bool AddPikomon(PiPointer pPikomons, DataQuantity *dataQuantities, Pikomon newPikomon);
+bool AddPikomon(PiPointer *pPikomons, DataQuantity *dataQuantities, Pikomon newPikomon);
 bool AddPlayer(PlPointer *pPlayers, DataQuantity *dataQuantities, char *name, char *pass);
-bool AddItemPlayerBag(PlPointer pPlayers, int playerIndex, ItPointer pItems, int itemIndex);;
+bool AddItemPlayerBag(PlPointer *pPlayers, int playerIndex, ItPointer pItems, int itemIndex);
 bool StorePikomonPlayer(PlPointer *pPlayers, int playerIndex, int storagePikomonPlacementIndex, PiPointer pPikomons, int pikomonIndex, DataQuantity dataQuantities);
 bool RemoveSkill(SkPointer *pSkills, DataQuantity *dataQuantities, int indexRemove);
 bool RemoveItem(ItPointer *pItems, DataQuantity *dataQuantities, int indexRemove);
@@ -220,7 +220,7 @@ bool ShopItems(PlPointer players, int playerAtualIndex, ItPointer pItems, DataQu
 void PrintPikomonEffects(PiPointer pikomon);
 void PassPikomonTurnTime(PiPointer pikomon);
 bool ShowSkill(SkPointer skill);
-void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPointer defenser, bool *elementalEffectHit, bool *skillHit, bool *critHit, bool *selfEffectHit, bool *enemyEffectHit, int *selfDamage, int *enemyDamage);
+void UseSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPointer defenser, bool *elementalEffectHit, bool *skillHit, bool *critHit, bool *selfEffectHit, bool *enemyEffectHit, int *selfDamage, int *enemyDamage);
 bool ShowItems(ItPointer pItem);
 void UseItem(PlPointer selfPlayer, PlPointer enemyPlayer, int itemUsedIndex, bool *usedItemStatusHit);
 bool ShowPikomon(PiPointer pPikomon);
@@ -265,156 +265,159 @@ int main(){
 
     //Loads
     //------------------------------------------------------------------------------------------------------------------//
+    
+    
+    
     //Define Personalities
-    /*
-        strcpy(allPersonalities[0].Name, "Cabeca-Quente");
-        allPersonalities[0].rarity = 8;
-        allPersonalities[0].BaseHPModifier = 100;
-        allPersonalities[0].BaseDefenseModifier = 100;
-        allPersonalities[0].BaseMagicDefenseModifier = 100;
-        allPersonalities[0].BaseAccuracyModifier = 70;
-        allPersonalities[0].BaseAttackModifier = 130;
-        allPersonalities[0].BaseElementalAccuracyModifier = 70;
-        allPersonalities[0].BaseMagicAttackModifier = 130;
-        allPersonalities[0].BaseSpeedModifier = 100;
+    /*strcpy(allPersonalities[0].Name, "Cabeca-Quente");
+    allPersonalities[0].rarity = 8;
+    allPersonalities[0].BaseHPModifier = 100;
+    allPersonalities[0].BaseDefenseModifier = 100;
+    allPersonalities[0].BaseMagicDefenseModifier = 100;
+    allPersonalities[0].BaseAccuracyModifier = 70;
+    allPersonalities[0].BaseAttackModifier = 130;
+    allPersonalities[0].BaseElementalAccuracyModifier = 70;
+    allPersonalities[0].BaseMagicAttackModifier = 130;
+    allPersonalities[0].BaseSpeedModifier = 100;
 
-        strcpy(allPersonalities[1].Name, "Meigo");
-        allPersonalities[1].rarity = 10;
-        allPersonalities[1].BaseHPModifier = 100;
-        allPersonalities[1].BaseDefenseModifier = 115;
-        allPersonalities[1].BaseMagicDefenseModifier = 115;
-        allPersonalities[1].BaseAccuracyModifier = 100;
-        allPersonalities[1].BaseAttackModifier = 85;
-        allPersonalities[1].BaseElementalAccuracyModifier = 100;
-        allPersonalities[1].BaseMagicAttackModifier = 85;
-        allPersonalities[1].BaseSpeedModifier = 100;
+    strcpy(allPersonalities[1].Name, "Meigo");
+    allPersonalities[1].rarity = 10;
+    allPersonalities[1].BaseHPModifier = 100;
+    allPersonalities[1].BaseDefenseModifier = 115;
+    allPersonalities[1].BaseMagicDefenseModifier = 115;
+    allPersonalities[1].BaseAccuracyModifier = 100;
+    allPersonalities[1].BaseAttackModifier = 85;
+    allPersonalities[1].BaseElementalAccuracyModifier = 100;
+    allPersonalities[1].BaseMagicAttackModifier = 85;
+    allPersonalities[1].BaseSpeedModifier = 100;
 
-        strcpy(allPersonalities[2].Name, "Apressado");
-        allPersonalities[2].rarity = 5;
-        allPersonalities[2].BaseHPModifier = 100;
-        allPersonalities[2].BaseDefenseModifier = 100;
-        allPersonalities[2].BaseMagicDefenseModifier = 100;
-        allPersonalities[2].BaseAccuracyModifier = 95;
-        allPersonalities[2].BaseAttackModifier = 80;
-        allPersonalities[2].BaseElementalAccuracyModifier = 95;
-        allPersonalities[2].BaseMagicAttackModifier = 80;
-        allPersonalities[2].BaseSpeedModifier = 130;
+    strcpy(allPersonalities[2].Name, "Apressado");
+    allPersonalities[2].rarity = 5;
+    allPersonalities[2].BaseHPModifier = 100;
+    allPersonalities[2].BaseDefenseModifier = 100;
+    allPersonalities[2].BaseMagicDefenseModifier = 100;
+    allPersonalities[2].BaseAccuracyModifier = 95;
+    allPersonalities[2].BaseAttackModifier = 80;
+    allPersonalities[2].BaseElementalAccuracyModifier = 95;
+    allPersonalities[2].BaseMagicAttackModifier = 80;
+    allPersonalities[2].BaseSpeedModifier = 130;
 
-        strcpy(allPersonalities[3].Name, "Dorminhoco");
-        allPersonalities[3].rarity = 11;
-        allPersonalities[3].BaseHPModifier = 100;
-        allPersonalities[3].BaseDefenseModifier = 100;
-        allPersonalities[3].BaseMagicDefenseModifier = 130;
-        allPersonalities[3].BaseAccuracyModifier = 100;
-        allPersonalities[3].BaseAttackModifier = 100;
-        allPersonalities[3].BaseElementalAccuracyModifier = 100;
-        allPersonalities[3].BaseMagicAttackModifier = 80;
-        allPersonalities[3].BaseSpeedModifier = 70;
+    strcpy(allPersonalities[3].Name, "Dorminhoco");
+    allPersonalities[3].rarity = 11;
+    allPersonalities[3].BaseHPModifier = 100;
+    allPersonalities[3].BaseDefenseModifier = 100;
+    allPersonalities[3].BaseMagicDefenseModifier = 130;
+    allPersonalities[3].BaseAccuracyModifier = 100;
+    allPersonalities[3].BaseAttackModifier = 100;
+    allPersonalities[3].BaseElementalAccuracyModifier = 100;
+    allPersonalities[3].BaseMagicAttackModifier = 80;
+    allPersonalities[3].BaseSpeedModifier = 70;
 
-        strcpy(allPersonalities[4].Name, "Místico");
-        allPersonalities[4].rarity = 6;
-        allPersonalities[4].BaseHPModifier = 100;
-        allPersonalities[4].BaseDefenseModifier = 90;
-        allPersonalities[4].BaseMagicDefenseModifier = 130;
-        allPersonalities[4].BaseAccuracyModifier = 100;
-        allPersonalities[4].BaseAttackModifier = 70;
-        allPersonalities[4].BaseElementalAccuracyModifier = 100;
-        allPersonalities[4].BaseMagicAttackModifier = 130;
-        allPersonalities[4].BaseSpeedModifier = 100;
+    strcpy(allPersonalities[4].Name, "Místico");
+    allPersonalities[4].rarity = 6;
+    allPersonalities[4].BaseHPModifier = 100;
+    allPersonalities[4].BaseDefenseModifier = 90;
+    allPersonalities[4].BaseMagicDefenseModifier = 130;
+    allPersonalities[4].BaseAccuracyModifier = 100;
+    allPersonalities[4].BaseAttackModifier = 70;
+    allPersonalities[4].BaseElementalAccuracyModifier = 100;
+    allPersonalities[4].BaseMagicAttackModifier = 130;
+    allPersonalities[4].BaseSpeedModifier = 100;
 
-        strcpy(allPersonalities[5].Name, "Hercúleo");
-        allPersonalities[5].rarity = 6;
-        allPersonalities[5].BaseHPModifier = 100;
-        allPersonalities[5].BaseDefenseModifier = 110;
-        allPersonalities[5].BaseMagicDefenseModifier = 90;
-        allPersonalities[5].BaseAccuracyModifier = 100;
-        allPersonalities[5].BaseAttackModifier = 130;
-        allPersonalities[5].BaseElementalAccuracyModifier = 100;
-        allPersonalities[5].BaseMagicAttackModifier = 70;
-        allPersonalities[5].BaseSpeedModifier = 100;
+    strcpy(allPersonalities[5].Name, "Hercúleo");
+    allPersonalities[5].rarity = 6;
+    allPersonalities[5].BaseHPModifier = 100;
+    allPersonalities[5].BaseDefenseModifier = 110;
+    allPersonalities[5].BaseMagicDefenseModifier = 90;
+    allPersonalities[5].BaseAccuracyModifier = 100;
+    allPersonalities[5].BaseAttackModifier = 130;
+    allPersonalities[5].BaseElementalAccuracyModifier = 100;
+    allPersonalities[5].BaseMagicAttackModifier = 70;
+    allPersonalities[5].BaseSpeedModifier = 100;
 
-        strcpy(allPersonalities[6].Name, "Assustado");
-        allPersonalities[6].rarity = 5;
-        allPersonalities[6].BaseHPModifier = 100;
-        allPersonalities[6].BaseDefenseModifier = 80;
-        allPersonalities[6].BaseMagicDefenseModifier = 80;
-        allPersonalities[6].BaseAccuracyModifier = 100;
-        allPersonalities[6].BaseAttackModifier = 100;
-        allPersonalities[6].BaseElementalAccuracyModifier = 100;
-        allPersonalities[6].BaseMagicAttackModifier = 100;
-        allPersonalities[6].BaseSpeedModifier = 130;
+    strcpy(allPersonalities[6].Name, "Assustado");
+    allPersonalities[6].rarity = 5;
+    allPersonalities[6].BaseHPModifier = 100;
+    allPersonalities[6].BaseDefenseModifier = 80;
+    allPersonalities[6].BaseMagicDefenseModifier = 80;
+    allPersonalities[6].BaseAccuracyModifier = 100;
+    allPersonalities[6].BaseAttackModifier = 100;
+    allPersonalities[6].BaseElementalAccuracyModifier = 100;
+    allPersonalities[6].BaseMagicAttackModifier = 100;
+    allPersonalities[6].BaseSpeedModifier = 130;
 
-        strcpy(allPersonalities[7].Name, "Jovial");
-        allPersonalities[7].rarity = 1;
-        allPersonalities[7].BaseHPModifier = 100;
-        allPersonalities[7].BaseDefenseModifier = 110;
-        allPersonalities[7].BaseMagicDefenseModifier = 110;
-        allPersonalities[7].BaseAccuracyModifier = 110;
-        allPersonalities[7].BaseAttackModifier = 110;
-        allPersonalities[7].BaseMagicAttackModifier = 110;
-        allPersonalities[7].BaseSpeedModifier = 110;
+    strcpy(allPersonalities[7].Name, "Jovial");
+    allPersonalities[7].rarity = 1;
+    allPersonalities[7].BaseHPModifier = 100;
+    allPersonalities[7].BaseDefenseModifier = 110;
+    allPersonalities[7].BaseMagicDefenseModifier = 110;
+    allPersonalities[7].BaseAccuracyModifier = 110;
+    allPersonalities[7].BaseAttackModifier = 110;
+    allPersonalities[7].BaseMagicAttackModifier = 110;
+    allPersonalities[7].BaseSpeedModifier = 110;
 
-        strcpy(allPersonalities[8].Name, "Afobado");
-        allPersonalities[8].rarity = 5;
-        allPersonalities[8].BaseHPModifier = 100;
-        allPersonalities[8].BaseDefenseModifier = 100;
-        allPersonalities[8].BaseMagicDefenseModifier = 100;
-        allPersonalities[8].BaseAccuracyModifier = 80;
-        allPersonalities[8].BaseAttackModifier = 100;
-        allPersonalities[8].BaseElementalAccuracyModifier = 80;
-        allPersonalities[8].BaseMagicAttackModifier = 100;
-        allPersonalities[8].BaseSpeedModifier = 120;
+    strcpy(allPersonalities[8].Name, "Afobado");
+    allPersonalities[8].rarity = 5;
+    allPersonalities[8].BaseHPModifier = 100;
+    allPersonalities[8].BaseDefenseModifier = 100;
+    allPersonalities[8].BaseMagicDefenseModifier = 100;
+    allPersonalities[8].BaseAccuracyModifier = 80;
+    allPersonalities[8].BaseAttackModifier = 100;
+    allPersonalities[8].BaseElementalAccuracyModifier = 80;
+    allPersonalities[8].BaseMagicAttackModifier = 100;
+    allPersonalities[8].BaseSpeedModifier = 120;
 
-        strcpy(allPersonalities[9].Name, "Teimoso");
-        allPersonalities[9].rarity = 10;
-        allPersonalities[9].BaseHPModifier = 100;
-        allPersonalities[9].BaseDefenseModifier = 85;
-        allPersonalities[9].BaseMagicDefenseModifier = 85;
-        allPersonalities[9].BaseAccuracyModifier = 130;
-        allPersonalities[9].BaseAttackModifier = 100;
-        allPersonalities[9].BaseElementalAccuracyModifier = 130;
-        allPersonalities[9].BaseMagicAttackModifier = 100;
-        allPersonalities[9].BaseSpeedModifier = 100;
+    strcpy(allPersonalities[9].Name, "Teimoso");
+    allPersonalities[9].rarity = 10;
+    allPersonalities[9].BaseHPModifier = 100;
+    allPersonalities[9].BaseDefenseModifier = 85;
+    allPersonalities[9].BaseMagicDefenseModifier = 85;
+    allPersonalities[9].BaseAccuracyModifier = 130;
+    allPersonalities[9].BaseAttackModifier = 100;
+    allPersonalities[9].BaseElementalAccuracyModifier = 130;
+    allPersonalities[9].BaseMagicAttackModifier = 100;
+    allPersonalities[9].BaseSpeedModifier = 100;
 
-        strcpy(allPersonalities[10].Name, "Invejoso");
-        allPersonalities[10].rarity = 11;
-        allPersonalities[10].BaseHPModifier = 100;
-        allPersonalities[10].BaseDefenseModifier = 100;
-        allPersonalities[10].BaseMagicDefenseModifier = 120;
-        allPersonalities[10].BaseAccuracyModifier = 100;
-        allPersonalities[10].BaseAttackModifier = 100;
-        allPersonalities[10].BaseElementalAccuracyModifier = 100;
-        allPersonalities[10].BaseMagicAttackModifier = 120;
-        allPersonalities[10].BaseSpeedModifier = 80;
+    strcpy(allPersonalities[10].Name, "Invejoso");
+    allPersonalities[10].rarity = 11;
+    allPersonalities[10].BaseHPModifier = 100;
+    allPersonalities[10].BaseDefenseModifier = 100;
+    allPersonalities[10].BaseMagicDefenseModifier = 120;
+    allPersonalities[10].BaseAccuracyModifier = 100;
+    allPersonalities[10].BaseAttackModifier = 100;
+    allPersonalities[10].BaseElementalAccuracyModifier = 100;
+    allPersonalities[10].BaseMagicAttackModifier = 120;
+    allPersonalities[10].BaseSpeedModifier = 80;
 
-        strcpy(allPersonalities[11].Name, "Resistente");
-        allPersonalities[11].rarity = 11;
-        allPersonalities[11].BaseHPModifier = 100;
-        allPersonalities[11].BaseDefenseModifier = 130;
-        allPersonalities[11].BaseMagicDefenseModifier = 100;
-        allPersonalities[11].BaseAccuracyModifier = 100;
-        allPersonalities[11].BaseElementalAccuracyModifier = 100;
-        allPersonalities[11].BaseAttackModifier = 100;
-        allPersonalities[11].BaseMagicAttackModifier = 100;
-        allPersonalities[11].BaseSpeedModifier = 70;
+    strcpy(allPersonalities[11].Name, "Resistente");
+    allPersonalities[11].rarity = 11;
+    allPersonalities[11].BaseHPModifier = 100;
+    allPersonalities[11].BaseDefenseModifier = 130;
+    allPersonalities[11].BaseMagicDefenseModifier = 100;
+    allPersonalities[11].BaseAccuracyModifier = 100;
+    allPersonalities[11].BaseElementalAccuracyModifier = 100;
+    allPersonalities[11].BaseAttackModifier = 100;
+    allPersonalities[11].BaseMagicAttackModifier = 100;
+    allPersonalities[11].BaseSpeedModifier = 70;
 
-        strcpy(allPersonalities[12].Name, "Decidido");
-        allPersonalities[12].rarity = 11;
-        allPersonalities[12].BaseHPModifier = 100;
-        allPersonalities[12].BaseDefenseModifier = 120;
-        allPersonalities[12].BaseMagicDefenseModifier = 100;
-        allPersonalities[12].BaseAccuracyModifier = 100;
-        allPersonalities[12].BaseAttackModifier = 120;
-        allPersonalities[12].BaseElementalAccuracyModifier = 100;
-        allPersonalities[12].BaseMagicAttackModifier = 100;
-        allPersonalities[12].BaseSpeedModifier = 80;
+    strcpy(allPersonalities[12].Name, "Decidido");
+    allPersonalities[12].rarity = 11;
+    allPersonalities[12].BaseHPModifier = 100;
+    allPersonalities[12].BaseDefenseModifier = 120;
+    allPersonalities[12].BaseMagicDefenseModifier = 100;
+    allPersonalities[12].BaseAccuracyModifier = 100;
+    allPersonalities[12].BaseAttackModifier = 120;
+    allPersonalities[12].BaseElementalAccuracyModifier = 100;
+    allPersonalities[12].BaseMagicAttackModifier = 100;
+    allPersonalities[12].BaseSpeedModifier = 80;
 
-        SavePersonalities(allPersonalities, personalities);*/
+    SavePersonalities(allPersonalities, personalities);*/
+
+
+
 
     //Define Elements
-    
-    /*    
-    strcpy(allElements[0].Name, "Comum"); 
+    /*strcpy(allElements[0].Name, "Comum"); 
     strcpy(allElements[0].Acronym, "Drm");
     allElements[0].Effectiveness[0] = 100; 
     allElements[0].Effectiveness[1] = 100;
@@ -872,8 +875,7 @@ int main(){
     allElements[9].StatusEffect[7].Quantity = 0;
     allElements[9].StatusEffect[7].Timer = 0;
 
-    SaveElements(allElements, elements);
-    */
+    SaveElements(allElements, elements);*/
 
 
 
@@ -889,6 +891,7 @@ int main(){
     }
     fclose(dBPersonalities);
 
+
     dBElements = fopen(elements, "rb");
     if(dBElements == NULL){
         perror("Falha ao abrir \"elements\"");
@@ -900,6 +903,7 @@ int main(){
         return 2;
     }
     fclose(dBElements);
+
 
     dBDataQuantity = fopen(dataQuantity, "r");
     if(dBDataQuantity == NULL){
@@ -945,6 +949,7 @@ int main(){
     fread(pItems,sizeof(Item), dataQuantities.Item, dBItens);
     fclose(dBItens);
 
+
     pPikomons = (PiPointer)calloc(dataQuantities.Pikomon, sizeof(Pikomon));
     if(pPikomons == NULL){
         perror("Falha ao allocar \"pPikomons\"");
@@ -963,7 +968,6 @@ int main(){
     fclose(dBPikomons);
 
 
-    
     pPlayers = (PlPointer)calloc(dataQuantities.Player, sizeof(Player));
     if(pPlayers == NULL){
         perror("Falha ao allocar \"pPlayers\"");
@@ -983,154 +987,298 @@ int main(){
     fread(pPlayers, sizeof(Player), dataQuantities.Player, dBPlayers);
     fclose(dBPlayers);
 
-
     //define pikomons//
-    /*char descfds[3][255];
-    strcpy(descfds[0], "");
-    strcpy(descfds[1], "");
-    strcpy(descfds[2], "");
-    char icoImg[7][25];
-    strcpy(icoImg[0], "####__________####");
-    strcpy(icoImg[1], "###|          |###");
-    strcpy(icoImg[2], "###| .      . |###");
-    strcpy(icoImg[3], "###|   -__-   |###");
-    strcpy(icoImg[4], "###|          |###");
-    strcpy(icoImg[5], "###|          |###");
-    strcpy(icoImg[6], "###|__________|###");
+    /*Pikomon newPikomon;
+    memset(&newPikomon, 0, sizeof(Pikomon));
+    //isso é para todos os pikomons por isso não aparece mais;
+    strcpy(newPikomon.Passive, "");
+    strcpy(newPikomon.PassiveDescription[0], "");
+    strcpy(newPikomon.PassiveDescription[1], "");
+    strcpy(newPikomon.PassiveDescription[2], "");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Moldew", allElements[0], icoImg, "", descfds, 5, 25,25,25,100,25,100,25,35);
+    strcpy(newPikomon.IconImg[0], "####__________####");
+    strcpy(newPikomon.IconImg[1], "###|          |###");
+    strcpy(newPikomon.IconImg[2], "###| .      . |###");
+    strcpy(newPikomon.IconImg[3], "###|   -__-   |###");
+    strcpy(newPikomon.IconImg[4], "###|          |###");
+    strcpy(newPikomon.IconImg[5], "###|          |###");
+    strcpy(newPikomon.IconImg[6], "###|__________|###");
+    strcpy(newPikomon.Name, "Moldew");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[0];
+    newPikomon.Atributes[0].Base = 25;
+    newPikomon.Atributes[1].Base = 25;
+    newPikomon.Atributes[2].Base = 25;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 25;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 25;
+    newPikomon.Atributes[7].Base = 35;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    char icoImg1[7][25];
-    strcpy(icoImg1[0], "   ===      ===   ");
-    strcpy(icoImg1[1], "  [###]    [###]  ");
-    strcpy(icoImg1[2], " |#####====#####| ");
-    strcpy(icoImg1[3], "  [##0######0##]  ");
-    strcpy(icoImg1[4], "   \\__\\####/__/   ");
-    strcpy(icoImg1[5], "       \\##/       ");
-    strcpy(icoImg1[6], "        \\/        ");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Ratton", allElements[0], icoImg1, "", descfds, 5, 50,20,35,100,30,100,20,65);
 
-    char icoImg2[7][25];
-    strcpy(icoImg2[0], "   /\\        /\\  ");
-    strcpy(icoImg2[1], "  /##\\      /##\\  ");
-    strcpy(icoImg2[2], " [#####======###\\ ");
-    strcpy(icoImg2[3], "[######O######O##]");
-    strcpy(icoImg2[4], "[|\\|\\|\\(___/\\_)##|");
-    strcpy(icoImg2[5], "/====/##########| ");
-    strcpy(icoImg2[6], "====/##########|  ");
+    strcpy(newPikomon.IconImg[0], "   ===      ===   ");
+    strcpy(newPikomon.IconImg[1], "  [###]    [###]  ");
+    strcpy(newPikomon.IconImg[2], " |#####====#####| ");
+    strcpy(newPikomon.IconImg[3], "  [##0######0##]  ");
+    strcpy(newPikomon.IconImg[4], "   \\__\\####/__/   ");
+    strcpy(newPikomon.IconImg[5], "       \\##/       ");
+    strcpy(newPikomon.IconImg[6], "        \\/        ");
+    strcpy(newPikomon.Name, "Ratton");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[0];
+    newPikomon.Atributes[0].Base = 50;
+    newPikomon.Atributes[1].Base = 20;
+    newPikomon.Atributes[2].Base = 35;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 30;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 20;
+    newPikomon.Atributes[7].Base = 65;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    AddPikomon(&pPikomons, &dataQuantities, "Bichano", allElements[0], icoImg2, "", descfds, 5, 50,50,35,100,50,100,20,60);
 
-    char icoImg3[7][25];
-    strcpy(icoImg3[0], "        /\\        ");
-    strcpy(icoImg3[1], "       /##\\       ");
-    strcpy(icoImg3[2], "      /####\\      ");
-    strcpy(icoImg3[3], "==================");
-    strcpy(icoImg3[4], "     |*####*|     ");
-    strcpy(icoImg3[5], "     v^^ww^^v     ");
-    strcpy(icoImg3[6], "      wwvvww      ");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Mago", allElements[5], icoImg3, "", descfds, 5, 60,45,50,100,15,100,75,35);
+    strcpy(newPikomon.IconImg[0], "   /\\        /\\  ");
+    strcpy(newPikomon.IconImg[1], "  /##\\      /##\\  ");
+    strcpy(newPikomon.IconImg[2], " [#####======###\\ ");
+    strcpy(newPikomon.IconImg[3], "[######O######O##]");
+    strcpy(newPikomon.IconImg[4], "[|\\|\\|\\(___/\\_)##|");
+    strcpy(newPikomon.IconImg[5], "/====/##########| ");
+    strcpy(newPikomon.IconImg[6], "====/##########|  ");
+    strcpy(newPikomon.Name, "Bichano");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[0];
+    newPikomon.Atributes[0].Base = 50;
+    newPikomon.Atributes[1].Base = 50;
+    newPikomon.Atributes[2].Base = 35;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 50;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 20;
+    newPikomon.Atributes[7].Base = 60;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    char icoImg4[7][25];
-    strcpy(icoImg4[0], "   ___=====__     ");
-    strcpy(icoImg4[1], " </##########\\__  ");
-    strcpy(icoImg4[2], "</#######ò####*#} ");
-    strcpy(icoImg4[3], "<#########/vvvvv  ");
-    strcpy(icoImg4[4], "/#########\\^^^^^} ");
-    strcpy(icoImg4[5], "#########/‾‾‾‾‾‾  ");
-    strcpy(icoImg4[6], "########|         ");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Calangora", allElements[9], icoImg4, "", descfds, 5, 60,45,20,100,75,100,10,45);
 
-    char icoImg5[7][25];
-    strcpy(icoImg5[0], "######__/\\__######");
-    strcpy(icoImg5[1], "#####[      ]#####");
-    strcpy(icoImg5[2], "####|<>    <>|####");
-    strcpy(icoImg5[3], "####| |====| |####");
-    strcpy(icoImg5[4], "#####[______]#####");
-    strcpy(icoImg5[5], "####/|010101|\\####");
-    strcpy(icoImg5[6], "###| |101010| |###");
+    strcpy(newPikomon.IconImg[0], "        /\\        ");
+    strcpy(newPikomon.IconImg[1], "       /##\\       ");
+    strcpy(newPikomon.IconImg[2], "      /####\\      ");
+    strcpy(newPikomon.IconImg[3], "==================");
+    strcpy(newPikomon.IconImg[4], "     |*####*|     ");
+    strcpy(newPikomon.IconImg[5], "     v^^ww^^v     ");
+    strcpy(newPikomon.IconImg[6], "      wwvvww      ");
+    strcpy(newPikomon.Name, "Mago");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[5];
+    newPikomon.Atributes[0].Base = 60;
+    newPikomon.Atributes[1].Base = 45;
+    newPikomon.Atributes[2].Base = 50;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 15;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 75;
+    newPikomon.Atributes[7].Base = 35;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    AddPikomon(&pPikomons, &dataQuantities, "Roboto", allElements[4], icoImg5, "", descfds, 5, 60,80,80,100,20,100,20,35);
 
-    char icoImg6[7][25];
-    strcpy(icoImg6[0], "########^#######/|");
-    strcpy(icoImg6[1], "#####__/#\\#####/ }");
-    strcpy(icoImg6[2], "###==o    ==__/ }#");
-    strcpy(icoImg6[3], "##>           <###");
-    strcpy(icoImg6[4], "###===\\|__==‾‾\\###");
-    strcpy(icoImg6[5], "###############‾##");
-    strcpy(icoImg6[6], "##################");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Peixe Secreto", allElements[2], icoImg6, "", descfds, 5, 50,45,45,100,45,100,45,45);
+    strcpy(newPikomon.IconImg[0], "   ___=====__     ");
+    strcpy(newPikomon.IconImg[1], " </##########\\__  ");
+    strcpy(newPikomon.IconImg[2], "</#########Ò####_} ");
+    strcpy(newPikomon.IconImg[3], "<#########/WvWvW  ");
+    strcpy(newPikomon.IconImg[4], "/#########\\M^M^M}");
+    strcpy(newPikomon.IconImg[5], "|########/‾‾‾‾‾‾ ");
+    strcpy(newPikomon.IconImg[6], "########|         ");
+    strcpy(newPikomon.Name, "Calangora");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[9];
+    newPikomon.Atributes[0].Base = 60;
+    newPikomon.Atributes[1].Base = 45;
+    newPikomon.Atributes[2].Base = 20;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 75;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 10;
+    newPikomon.Atributes[7].Base = 45;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    char icoImg7[7][25];
-    strcpy(icoImg7[0], "##__##_===_##__###");
-    strcpy(icoImg7[1], "#{  }{ o o }{  }##");
-    strcpy(icoImg7[2], "#[. \\|  ^  |/; ]>#");
-    strcpy(icoImg7[3], "#<\\__    .  __/###");
-    strcpy(icoImg7[4], "###v#|v    |#,####");
-    strcpy(icoImg7[5], "####,|   <>|######");
-    strcpy(icoImg7[6], "#####|,    |>#####");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Cacto", allElements[3], icoImg7, "", descfds, 5, 70,75,60,100,10,100,65,35);
 
-    char icoImg8[7][25];
-    strcpy(icoImg8[0], " ==_   ^==^   _== ");
-    strcpy(icoImg8[1], "{WVW{ {*\\/*} }WVW}");
-    strcpy(icoImg8[2], "|{\\|v\\_/##\\_/v|/}|");
-    strcpy(icoImg8[3], " [v\\V\\{####}/V/v] ");
-    strcpy(icoImg8[4], "  \\V\\v\\{##}/v/V/  ");
-    strcpy(icoImg8[5], "      /WwwW\\      ");
-    strcpy(icoImg8[6], "    <v/V/\\V\\v>    ");
+    strcpy(newPikomon.IconImg[0], "######__/\\__######");
+    strcpy(newPikomon.IconImg[1], "#####[      ]#####");
+    strcpy(newPikomon.IconImg[2], "####|<>    <>|####");
+    strcpy(newPikomon.IconImg[3], "####| |====| |####");
+    strcpy(newPikomon.IconImg[4], "#####[______]#####");
+    strcpy(newPikomon.IconImg[5], "####/|010101|\\####");
+    strcpy(newPikomon.IconImg[6], "###| |101010| |###");
+    strcpy(newPikomon.Name, "Roboto");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[4];
+    newPikomon.Atributes[0].Base = 60;
+    newPikomon.Atributes[1].Base = 80;
+    newPikomon.Atributes[2].Base = 80;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 20;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 20;
+    newPikomon.Atributes[7].Base = 35;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    AddPikomon(&pPikomons, &dataQuantities, "Fênix", allElements[1], icoImg8, "", descfds, 5, 50,20,20,100,70,100,75,65);
 
-    char icoImg9[7][25];
-    strcpy(icoImg9[0], "#######====#######");
-    strcpy(icoImg9[1], "######{wVVw}######");
-    strcpy(icoImg9[2], "#####[o ^^ o]#####");
-    strcpy(icoImg9[3], "####[ T{  }T ]####");
-    strcpy(icoImg9[4], "###{  J || L  }###");
-    strcpy(icoImg9[5], "####{  /LJ\\  }####");
-    strcpy(icoImg9[6], "####{m}u##u{m}####");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Mamute", allElements[7], icoImg9, "", descfds, 5, 80,20,20,100,60,100,20,45);
+    strcpy(newPikomon.IconImg[0], "########^#######/|");
+    strcpy(newPikomon.IconImg[1], "#####__/#\\#####/ }");
+    strcpy(newPikomon.IconImg[2], "###==o    ==__/ }#");
+    strcpy(newPikomon.IconImg[3], "##>           <###");
+    strcpy(newPikomon.IconImg[4], "###===\\|__==‾‾\\###");
+    strcpy(newPikomon.IconImg[5], "###############‾##");
+    strcpy(newPikomon.IconImg[6], "##################");
+    strcpy(newPikomon.Name, "Peixe Secreto");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[2];
+    newPikomon.Atributes[0].Base = 50;
+    newPikomon.Atributes[1].Base = 45;
+    newPikomon.Atributes[2].Base = 45;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 45;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 45;
+    newPikomon.Atributes[7].Base = 45;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
+    
 
-    char icoImg10[7][25];
-    strcpy(icoImg10[0], "######_===_#######");
-    strcpy(icoImg10[1], "#####/0 o /#######");
-    strcpy(icoImg10[2], "####[ ^ _[######oO");
-    strcpy(icoImg10[3], "#{‾‾ {__|#########");
-    strcpy(icoImg10[4], "##‾‾{   {######O##");
-    strcpy(icoImg10[5], "#####=_  \\###o####");
-    strcpy(icoImg10[6], "########\\_\\~######");
 
-    AddPikomon(&pPikomons, &dataQuantities, "Vulto", allElements[5], icoImg10, "", descfds, 5, 50,80,10,100,80,100,10,45);
+    strcpy(newPikomon.IconImg[0], "##__##_===_##__###");
+    strcpy(newPikomon.IconImg[1], "#{  }{ o o }{  }##");
+    strcpy(newPikomon.IconImg[2], "#[. \\|  ^  |/; ]>#");
+    strcpy(newPikomon.IconImg[3], "#<\\__    .  __/###");
+    strcpy(newPikomon.IconImg[4], "###v#|v    |#,####");
+    strcpy(newPikomon.IconImg[5], "####,|   <>|######");
+    strcpy(newPikomon.IconImg[6], "#####|,    |>#####");
+    strcpy(newPikomon.Name, "Cacto");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[3];
+    newPikomon.Atributes[0].Base = 70;
+    newPikomon.Atributes[1].Base = 75;
+    newPikomon.Atributes[2].Base = 60;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 10;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 65;
+    newPikomon.Atributes[7].Base = 35;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    char icoImg11[7][25];
-    strcpy(icoImg11[0], "  \\\\          //  ");
-    strcpy(icoImg11[1], "   \\\\ _====_ //   ");
-    strcpy(icoImg11[2], "    \\{O=O=O=}/    ");
-    strcpy(icoImg11[3], "===={O=O=O=O=}====");
-    strcpy(icoImg11[4], "    /{O=O=O=}\\    ");
-    strcpy(icoImg11[5], "   // ‾====‾ \\\\   ");
-    strcpy(icoImg11[6], "  //          \\\\  ");
 
-    AddPikomon(&pPikomons, &dataQuantities, "AlienSolar", allElements[6], icoImg11, "", descfds, 5, 70,40,80,100,10,100,75,35);
 
-    char icoImg12[7][25];
-    strcpy(icoImg12[0], "#######/\\#########");
-    strcpy(icoImg12[1], "######/__\\########");
-    strcpy(icoImg12[2], "#####[T T ]#######");
-    strcpy(icoImg12[3], "####|  ^  o|######");
-    strcpy(icoImg12[4], "###|.   <>  |#####");
-    strcpy(icoImg12[5], "#.[  ^    *  ]#.##");
-    strcpy(icoImg12[6], "==================");
+    strcpy(newPikomon.IconImg[0], " ==_   ^==^   _== ");
+    strcpy(newPikomon.IconImg[1], "{WVW{ {*\\/*} }WVW}");
+    strcpy(newPikomon.IconImg[2], "|{\\|v\\_/##\\_/v|/}|");
+    strcpy(newPikomon.IconImg[3], " [v\\V\\{####}/V/v] ");
+    strcpy(newPikomon.IconImg[4], "  \\V\\v\\{##}/v/V/  ");
+    strcpy(newPikomon.IconImg[5], "      /WwwW\\      ");
+    strcpy(newPikomon.IconImg[6], "    <v/V/\\V\\v>    ");
+    strcpy(newPikomon.Name, "Fênix");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[1];
+    newPikomon.Atributes[0].Base = 50;
+    newPikomon.Atributes[1].Base = 20;
+    newPikomon.Atributes[2].Base = 20;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 70;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 75;
+    newPikomon.Atributes[7].Base = 65;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
 
-    AddPikomon(&pPikomons, &dataQuantities, "Speleotema", allElements[8], icoImg12, "", descfds, 5, 50,100,30,100,40,100,35,35);
+
+
+    strcpy(newPikomon.IconImg[0], "#######====#######");
+    strcpy(newPikomon.IconImg[1], "######{wVVw}######");
+    strcpy(newPikomon.IconImg[2], "#####[o ^^ o]#####");
+    strcpy(newPikomon.IconImg[3], "####[ T{  }T ]####");
+    strcpy(newPikomon.IconImg[4], "###{  J || L  }###");
+    strcpy(newPikomon.IconImg[5], "####{  /LJ\\  }####");
+    strcpy(newPikomon.IconImg[6], "####{m}u##u{m}####");
+    strcpy(newPikomon.Name, "Matute");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[7];
+    newPikomon.Atributes[0].Base = 80;
+    newPikomon.Atributes[1].Base = 20;
+    newPikomon.Atributes[2].Base = 20;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 60;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 20;
+    newPikomon.Atributes[7].Base = 45;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
+
+
+
+    strcpy(newPikomon.IconImg[0], "######_===_#######");
+    strcpy(newPikomon.IconImg[1], "#####/0 o /#######");
+    strcpy(newPikomon.IconImg[2], "####[ ^ _[######oO");
+    strcpy(newPikomon.IconImg[3], "#{‾‾ {__|#########");
+    strcpy(newPikomon.IconImg[4], "##‾‾{   {######O##");
+    strcpy(newPikomon.IconImg[5], "#####=_  \\###o####");
+    strcpy(newPikomon.IconImg[6], "########\\_\\~######");
+    strcpy(newPikomon.Name, "Vulto");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[5];
+    newPikomon.Atributes[0].Base = 50;
+    newPikomon.Atributes[1].Base = 80;
+    newPikomon.Atributes[2].Base = 10;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 80;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 10;
+    newPikomon.Atributes[7].Base = 45;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
+
+    strcpy(newPikomon.IconImg[0], "  \\\\          //  ");
+    strcpy(newPikomon.IconImg[1], "   \\\\ _====_ //   ");
+    strcpy(newPikomon.IconImg[2], "    \\{O=O=O=}/    ");
+    strcpy(newPikomon.IconImg[3], "===={O=O=O=O=}====");
+    strcpy(newPikomon.IconImg[4], "    /{O=O=O=}\\    ");
+    strcpy(newPikomon.IconImg[5], "   // ‾====‾ \\\\   ");
+    strcpy(newPikomon.IconImg[6], "  //          \\\\  ");
+    strcpy(newPikomon.Name, "AlienSolar");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[6];
+    newPikomon.Atributes[0].Base = 70;
+    newPikomon.Atributes[1].Base = 40;
+    newPikomon.Atributes[2].Base = 80;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 10;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 75;
+    newPikomon.Atributes[7].Base = 35;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
+
+
+
+    strcpy(newPikomon.IconImg[0], "#######/\\#########");
+    strcpy(newPikomon.IconImg[1], "######/__\\########");
+    strcpy(newPikomon.IconImg[2], "#####[T T ]#######");
+    strcpy(newPikomon.IconImg[3], "####|  ^  o|######");
+    strcpy(newPikomon.IconImg[4], "###|.   <>  |#####");
+    strcpy(newPikomon.IconImg[5], "#.[  ^    *  ]#.##");
+    strcpy(newPikomon.IconImg[6], "==================");
+    strcpy(newPikomon.Name, "Speleotema");
+    newPikomon.Value = 5;
+    newPikomon.Element = allElements[8];
+    newPikomon.Atributes[0].Base = 50;
+    newPikomon.Atributes[1].Base = 100;
+    newPikomon.Atributes[2].Base = 30;
+    newPikomon.Atributes[3].Base = 100;
+    newPikomon.Atributes[4].Base = 40;
+    newPikomon.Atributes[5].Base = 100;
+    newPikomon.Atributes[6].Base = 35;
+    newPikomon.Atributes[7].Base = 35;
+    AddPikomon(&pPikomons, &dataQuantities, newPikomon);
+
+
 
     SavePikomons(pPikomons, dataQuantities.Pikomon, pikomoms);
     SaveDataQuantity(dataQuantities, dataQuantity);*/
@@ -1517,11 +1665,7 @@ int main(){
     SaveDataQuantity(dataQuantities, dataQuantity);*/
 
     //Skills//
-    /*strcpy(DescAtiva[0], "");
-    strcpy(DescAtiva[1], "");
-    strcpy(DescAtiva[2], "");
-
-    bool LearnElementsComum[10];
+    /*bool LearnElementsComum[10];
     LearnElementsComum[0] = true;
     LearnElementsComum[1] = true;
     LearnElementsComum[2] = true;
@@ -1976,268 +2120,1206 @@ int main(){
     EffKABOOM[7].Quantity = 0; //Spd
     EffKABOOM[7].Timer = 0;
 
-    char Descri1[3][255];
-    strcpy(Descri1[0], "Um ataque básico.");
-    strcpy(Descri1[1], "");
-    strcpy(Descri1[2], "Comum, Físico");
 
-    AddSkill(&pSkills, &dataQuantities, "Mordida", "Físico", Descri1, "", DescAtiva, LearnPersonalitiesBasic, LearnElementsComum, 0, allElements[0], 'E', 100, 10, 10, 0, 0, 15, 'E', 0, EffNull, 0, EffNull);
-                                            //bool AddSkill(SkPointer *pSkills, DataQuantity *dataQuantities, char *name, char *type, char description[3][255], 
-                                            // char *active, char activeDescription[3][255], bool learnablePersonalities[13], bool LearnableElements[10], 
-                                            // int elementEffectHitChance, Element element, char target, int hitChance, int  attackBase, int attackScale, 
-                                            // int magicBase, int magicAttackScale, int critChance, char effectTarget, int enemyEffectHitChance, Effect enemyEffect[8], 
-                                            // int selfEffectHitChance, Effect selfEffect[8]);
 
+    Skill newSkill;
+    memset(&newSkill, 0, sizeof(Skill));
+    strcpy(newSkill.Active, "");
+    strcpy(newSkill.ActiveDescription[0], "");
+    strcpy(newSkill.ActiveDescription[0], "");
+    strcpy(newSkill.ActiveDescription[0], "");
+
+
+
+    strcpy(newSkill.Name, "Mordida");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um ataque básico.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Comum, Físico");
+    for(int c = 0;c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesBasic[c];
+    }
+    for(int c = 0;c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsComum[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[0];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 10;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Último Recurso");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um ataque que dá dano ao usuário");
+    strcpy(newSkill.Description[1], "e ao oponente.");
+    strcpy(newSkill.Description[2], "Comum, Físico");
+    for (int c = 0; c < 13; c++) {
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesBasic[c];
+    }
+    for (int c = 0; c < 10; c++) {
+        newSkill.LearnableElements[c] = LearnElementsComum[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[0];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 30;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++) {
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++) {
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Berrante");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque básico.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Comum, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesBasic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsComum[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[0];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 15;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Ataque Rápido");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um ataque que aumenta a");
+    strcpy(newSkill.Description[1], "Velocidade do usuário.");
+    strcpy(newSkill.Description[2], "Comum, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesBasic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsComum[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[0];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 5;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'S';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = Eff1[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Baque Ardente");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um ataque que pode queimar");
+    strcpy(newSkill.Description[1], "o oponente.");
+    strcpy(newSkill.Description[2], "Flamejante, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesPhys[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsFire[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[1];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 5;
+    newSkill.AttackScale = 30;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 20;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[1].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+    
+
+    strcpy(newSkill.Name, "Onda de Calor");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque que pode queimar");
+    strcpy(newSkill.Description[1], "o oponente.");
+    strcpy(newSkill.Description[2], "Flamejante, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsFire[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[1];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 5;
+    newSkill.MagicAttackScale = 30;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 20;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[1].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Faísca");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um ataque que pode queimar");
+    strcpy(newSkill.Description[1], "o oponente. Não dá dano.");
+    strcpy(newSkill.Description[2], "Flamejante, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsFire[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[1];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[1].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Terra Arrasada");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque que pode dá grande");
+    strcpy(newSkill.Description[1], "dano ao usuário e o oponente. Pode queimar.");
+    strcpy(newSkill.Description[2], "Flamejante, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsFire[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[1];
+    newSkill.Target = 'B';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 30;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'B';
+    newSkill.EnemyEffectHitChance = 50;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[1].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 50;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = allElements[1].StatusEffect[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Jato de Água");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque básico.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Aquático, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsWater[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[2];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 10;
+    newSkill.MagicAttackScale = 15;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Salto Carpado");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um ataque que aumenta ambos os");
+    strcpy(newSkill.Description[1], "Ataques e Velocidade do usuário.");
+    strcpy(newSkill.Description[2], "Aquático, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsWater[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[2];
+    newSkill.Target = 'S';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'S';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = Eff2[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Encharcar");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um ataque que Encharca o");
+    strcpy(newSkill.Description[1], "oponente.");
+    strcpy(newSkill.Description[2], "Aquático, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsWater[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[2];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[2].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+    strcpy(newSkill.Name, "Mergulho Torpedo");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um ataque que possui maior");
+    strcpy(newSkill.Description[1], "chance de ser Crítico.");
+    strcpy(newSkill.Description[2], "Aquático, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesPhys[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsWater[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[2];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 10;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 50;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Galho Espinhoso");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um ataque comum.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Natural, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsPlant[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[3];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 7;
+    newSkill.AttackScale = 35;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Raíz Drenante");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque que retorna ao usuário");
+    strcpy(newSkill.Description[1], "parte do dano dado.");
+    strcpy(newSkill.Description[2], "Natural, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsPlant[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[3];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 10;
+    newSkill.MagicAttackScale = 15;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'S';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = Eff3[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Enraizar");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um ataque que Enraíza");
+    strcpy(newSkill.Description[1], "o oponente.");
+    strcpy(newSkill.Description[2], "Natural, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsPlant[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[3];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[2].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Pólen Atordoante");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um ataque que diminui a");
+    strcpy(newSkill.Description[1], "Velocidade do oponente.");
+    strcpy(newSkill.Description[2], "Natural, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsPlant[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[3];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 5;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 15;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = Eff4[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Curto Circuito");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque poderosíssimo");
+    strcpy(newSkill.Description[1], "que nocauteia o usuário.");
+    strcpy(newSkill.Description[2], "Elétrico, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsElec[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[4];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 40;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'S';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffKABOOM[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Choque Fraco");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque fraco que");
+    strcpy(newSkill.Description[1], "pode Paralisar.");
+    strcpy(newSkill.Description[2], "Elétrico, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsElec[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[4];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 5;
+    newSkill.AttackScale = 15;
+    newSkill.MagicBase = 15;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 30;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[4].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Pó Mágico");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque comum.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Misterioso, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsSpook[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[5];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 20;
+    newSkill.MagicBase = 15;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Tapa Dimensional");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque comum.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Misterioso, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesPhys[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsSpook[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[5];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 20;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Assombração");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um ataque que Assombra");
+    strcpy(newSkill.Description[1], "o oponente.");
+    strcpy(newSkill.Description[2], "Misterioso, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsSpook[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[5];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 0;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[5].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Drenagem de Vida");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque que retorna ao usuário");
+    strcpy(newSkill.Description[1], "parte do dano aplicado.");
+    strcpy(newSkill.Description[2], "Misterioso, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsSpook[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[5];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 15;
+    newSkill.MagicBase = 15;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'S';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = Eff3[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Flashbang");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um ataque que Cega o oponente.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Luminoso, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsLight[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[6];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[6].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Carga Iluminada");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um golpe básico.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Luminoso, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesPhys[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsLight[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[6];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 30;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Olhar Desconsertante");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um golpe que diminui");
+    strcpy(newSkill.Description[1], "ambos os ataques do oponente.");
+    strcpy(newSkill.Description[2], "Luminoso, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsLight[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[6];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = Eff5[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Explosão Solar");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um ataque poderosíssimo");
+    strcpy(newSkill.Description[1], "que nocauteia o usuário.");
+    strcpy(newSkill.Description[2], "Luminoso, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsLight[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[6];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 40;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'S';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffKABOOM[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Soterragem");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um golpe soterra o");
+    strcpy(newSkill.Description[1], "oponente.");
+    strcpy(newSkill.Description[2], "Mineral, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsStone[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[8];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[7].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Cacos de Pedra");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um golpe que possui");
+    strcpy(newSkill.Description[1], "mais chances de Critar.");
+    strcpy(newSkill.Description[2], "Mineral, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesPhys[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsStone[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[8];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 15;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 50;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Cacos de Pedra");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um golpe que possui");
+    strcpy(newSkill.Description[1], "mais chances de Critar");
+    strcpy(newSkill.Description[2], "Mineral, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsStone[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[8];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 10;
+    newSkill.MagicAttackScale = 15;
+    newSkill.CritChance = 50;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Cacos de Pedra");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um golpe que aumenta a");
+    strcpy(newSkill.Description[1], "Velocidade do usuário.");
+    strcpy(newSkill.Description[2], "Mineral, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsStone[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[8];
+    newSkill.Target = 'S';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = Eff6[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Frente Fria");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um golpe básico.");
+    strcpy(newSkill.Description[1], "");
+    strcpy(newSkill.Description[2], "Gélido, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesPhys[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsIce[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[7];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 20;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = EffNull[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Granizo");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um golpe que diminui as");
+    strcpy(newSkill.Description[1], "Precisões do oponente.");
+    strcpy(newSkill.Description[2], "Gélido, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsIce[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[7];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 10;
+    newSkill.MagicAttackScale = 20;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = Eff7[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Hipotermizar");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um golpe que dá Calafrios");
+    strcpy(newSkill.Description[1], "ao oponente.");
+    strcpy(newSkill.Description[2], "Gélido, Status");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsIce[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[7];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[7].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Mordida Podre");
+    strcpy(newSkill.Type, "Físico");
+    strcpy(newSkill.Description[0], "Um golpe que pode Envenenar");
+    strcpy(newSkill.Description[1], "o oponente.");
+    strcpy(newSkill.Description[2], "Venenoso, Físico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesPhys[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsTox[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[9];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 10;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 15;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 50;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[9].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Cuspe Tóxico");
+    strcpy(newSkill.Type, "Mágico");
+    strcpy(newSkill.Description[0], "Um golpe que pode Envenenar");
+    strcpy(newSkill.Description[1], "o oponente.");
+    strcpy(newSkill.Description[2], "Venenoso, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesMagic[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsTox[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[9];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 10;
+    newSkill.AttackScale = 10;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 15;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 50;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = allElements[9].StatusEffect[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
+
+
+
+    strcpy(newSkill.Name, "Sopro Neurotóxico");
+    strcpy(newSkill.Type, "Status");
+    strcpy(newSkill.Description[0], "Um golpe que diminui as");
+    strcpy(newSkill.Description[1], "Defesas do oponente.");
+    strcpy(newSkill.Description[2], "Venenoso, Mágico");
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnablePersonalities[c] = LearnPersonalitiesStatus[c];
+    }
+    for(int c = 0; c < 13; c++){
+        newSkill.LearnableElements[c] = LearnElementsTox[c];
+    }
+    newSkill.ElementEffectHitChance = 0;
+    newSkill.Element = allElements[9];
+    newSkill.Target = 'E';
+    newSkill.HitChance = 100;
+    newSkill.AttackBase = 0;
+    newSkill.AttackScale = 0;
+    newSkill.MagicBase = 0;
+    newSkill.MagicAttackScale = 0;
+    newSkill.CritChance = 0;
+    newSkill.EffectTarget = 'E';
+    newSkill.EnemyEffectHitChance = 100;
+    for (int c = 0; c < 8; c++){
+        newSkill.EnemyEffect[c] = Eff8[c];
+    }
+    newSkill.SelfEffectHitChance = 0;
+    for (int c = 0; c < 8; c++){
+        newSkill.SelfEffect[c] = EffNull[c];
+    }
+    AddSkill(&pSkills, &dataQuantities, newSkill);
 
-    char Descri2[3][255];
-    strcpy(Descri2[0], "Um ataque que dá dano ao usuário");
-    strcpy(Descri2[1], "e ao oponente.");
-    strcpy(Descri2[2], "Comum, Físico");
 
-    AddSkill(&pSkills, &dataQuantities, "Último Recurso", "Físico", Descri2, "", DescAtiva, LearnPersonalitiesBasic, LearnElementsComum, 0, allElements[0], 'E', 100, 10, 30, 0, 0, 15, 'E', 0, EffNull , 0, EffNull);
-
-    char Descri3[3][255];
-    strcpy(Descri3[0], "Um ataque básico.");
-    strcpy(Descri3[1], "");
-    strcpy(Descri3[2], "Comum, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Berrante", "Mágico", Descri3, "", DescAtiva, LearnPersonalitiesBasic, LearnElementsComum, 0, allElements[0], 'E', 100, 0, 0, 15, 0, 15, 'E', 0, EffNull, 0, EffNull);
-
-
-    char Descri4[3][255];
-    strcpy(Descri4[0], "Um ataque que aumenta a");
-    strcpy(Descri4[1], "Velocidade do usuário.");
-    strcpy(Descri4[2], "Comum, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Ataque Rápido", "Físico", Descri4, "", DescAtiva, LearnPersonalitiesBasic, LearnElementsComum, 0, allElements[0], 'E', 100, 5, 0, 0, 0, 15, 'S', 0, EffNull, 100, Eff1);
-
-    char Descri5[3][255];
-    strcpy(Descri5[0], "Um ataque que pode queimar");
-    strcpy(Descri5[1], "o oponente.");
-    strcpy(Descri5[2], "Flamejante, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Baque Ardente", "Físico", Descri5, "", DescAtiva, LearnPersonalitiesPhys, LearnElementsFire, 0, allElements[1], 'E', 100, 5, 30, 0, 0, 15, 'E', 20, allElements[1].StatusEffect, 0, EffNull);
-
-    char Descri6[3][255];
-    strcpy(Descri6[0], "Um ataque que pode queimar");
-    strcpy(Descri6[1], "o oponente.");
-    strcpy(Descri6[2], "Flamejante, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Onda de Calor", "Mágico", Descri6, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsFire, 0, allElements[1], 'E', 100, 0, 0, 5, 30, 15, 'E', 20, allElements[1].StatusEffect, 0, EffNull);
-
-    char Descri7[3][255];
-    strcpy(Descri7[0], "Um ataque que pode queimar");
-    strcpy(Descri7[1], "o oponente. Não dá dano.");
-    strcpy(Descri7[2], "Flamejante, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Faísca", "Status", Descri7, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsFire, 0, allElements[1], 'E', 100, 0, 0, 0, 0, 0, 'E', 100, allElements[1].StatusEffect, 0, EffNull);
-
-    char Descri8[3][255];
-    strcpy(Descri8[0], "Um ataque que pode dá grande");
-    strcpy(Descri8[1], "dano ao usuário e o oponente. Pode queimar.");
-    strcpy(Descri8[2], "Flamejante, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Terra Arrasada", "Mágico", Descri8, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsFire, 0, allElements[1], 'B', 100, 0, 0, 30, 0, 0, 'B', 50, allElements[1].StatusEffect, 50, allElements[1].StatusEffect);
-
-    char Descri9[3][255];
-    strcpy(Descri9[0], "Um ataque básico.");
-    strcpy(Descri9[1], "");
-    strcpy(Descri9[2], "Aquático, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Jato de Água", "Mágico", Descri9, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsWater, 0, allElements[2], 'E', 100, 0, 0, 10, 15, 15, 'E', 0, EffNull, 0, EffNull);
-
-    char Descri10[3][255];
-    strcpy(Descri10[0], "Um ataque que aumenta ambos os");
-    strcpy(Descri10[1], "Ataques e Velocidade do usuário.");
-    strcpy(Descri10[2], "Aquático, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Salto Carpado", "Status", Descri10, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsWater, 0, allElements[2], 'S', 100, 0, 0, 0, 0, 0, 'S', 0, EffNull, 100, Eff2);
-
-    char Descri11[3][255];
-    strcpy(Descri11[0], "Um ataque que Encharca o");
-    strcpy(Descri11[1], "oponente.");
-    strcpy(Descri11[2], "Aquático, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Encharcar", "Status", Descri11, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsWater, 0, allElements[2], 'E', 100, 0, 0, 0, 0, 0, 'E', 100, allElements[2].StatusEffect, 0, EffNull);
-
-    char Descri12[3][255];
-    strcpy(Descri12[0], "Um ataque que possui maior");
-    strcpy(Descri12[1], "chance de ser Crítico.");
-    strcpy(Descri12[2], "Aquático, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Mergulho Torpedo", "Físico'", Descri12, "", DescAtiva, LearnPersonalitiesPhys, LearnElementsWater, 0, allElements[2], 'E', 100, 10, 10, 0, 0, 50, 'E', 0, EffNull, 0, EffNull);
-
-    char Descri13[3][255];
-    strcpy(Descri13[0], "Um ataque comum.");
-    strcpy(Descri13[1], "");
-    strcpy(Descri13[2], "Natural, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Galho Espinhoso", "Físico", Descri13, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsPlant, 0, allElements[3], 'E', 100, 7, 35, 0, 0, 15, 'E', 0, EffNull, 0, EffNull);
-
-    char Descri14[3][255];
-    strcpy(Descri14[0], "Um ataque que retorna ao usuário");
-    strcpy(Descri14[1], "parte do dano dado.");
-    strcpy(Descri14[2], "Natural, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Raíz Drenante", "Mágico", Descri14, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsPlant, 0, allElements[3],  'E', 100, 0, 0, 10, 15, 15, 'S', 0, EffNull, 100, Eff3);
-
-    char Descri15[3][255];
-    strcpy(Descri15[0], "Um ataque que Enraíza");
-    strcpy(Descri15[1], "o oponente.");
-    strcpy(Descri15[2], "Natural, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Enraizar", "Status", Descri15, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsPlant, 0, allElements[3], 'E', 100, 0, 0, 0, 0, 0, 'E', 100, allElements[2].StatusEffect, 0, EffNull);
-
-    char Descri16[3][255];
-    strcpy(Descri16[0], "Um ataque que diminui a");
-    strcpy(Descri16[1], "Velocidade do oponente.");
-    strcpy(Descri16[2], "Natural, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Pólen Atordoante", "Status", Descri16, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsPlant, 0, allElements[3], 'E', 100, 5, 0, 0, 0, 15, 'E', 100, Eff4, 0, EffNull);    
-
-    char Descri17[3][255];
-    strcpy(Descri17[0], "Um ataque poderosíssimo");
-    strcpy(Descri17[1], "que nocauteia o usuário.");
-    strcpy(Descri17[2], "Elétrico, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Curto Circuito", "Mágico", Descri17, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsElec, 0, allElements[4], 'E', 100, 0, 0, 40, 0, 0, 'S', 0, EffNull, 100, EffKABOOM);
-
-    char Descri18[3][255];
-    strcpy(Descri18[0], "Um ataque fraco que");
-    strcpy(Descri18[1], "pode Paralisar.");
-    strcpy(Descri18[2], "Elétrico, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Choque Fraco", "Mágico", Descri18, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsElec, 0, allElements[4], 'E', 100, 0, 0, 5, 15, 15, 'E', 0, EffNull, 30, allElements[4].StatusEffect);
-
-    char Descri19[3][255];
-    strcpy(Descri19[0], "Um ataque comum.");
-    strcpy(Descri19[1], "");
-    strcpy(Descri19[2], "Misterioso, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Pó Mágico", "Mágico", Descri19, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsSpook, 0, allElements[5], 'E', 100, 0, 0, 10, 20, 15, 'E', 0, EffNull, 0, EffNull);
-
-    char Descri20[3][255];
-    strcpy(Descri20[0], "Um ataque comum.");
-    strcpy(Descri20[1], "");
-    strcpy(Descri20[2], "Misterioso, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Tapa Dimensional", "Mágico", Descri20, "", DescAtiva, LearnPersonalitiesPhys, LearnElementsSpook, 0, allElements[5], 'E', 100, 10, 20, 0, 0, 15, 'E', 0, EffNull, 0, EffNull);
-
-    char Descri21[3][255];
-    strcpy(Descri21[0], "Um ataque que Assombra");
-    strcpy(Descri21[1], "o oponente.");
-    strcpy(Descri21[2], "Misterioso, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Assombração", "Status", Descri21, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsSpook, 0, allElements[5], 'E', 0, 0, 0, 0, 0, 0, 'E', 100, allElements[5].StatusEffect, 0, EffNull);
-
-    char Descri22[3][255];
-    strcpy(Descri22[0], "Um ataque que retorna ao usuário");
-    strcpy(Descri22[1], "parte do dano aplicado.");
-    strcpy(Descri22[2], "Misterioso, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Drenagem de Vida", "Mágico", Descri22, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsSpook, 0, allElements[5], 'E', 100, 0, 0, 10, 15, 15, 'S', 0, EffNull, 100, Eff3);
-
-    char Descri23[3][255];
-    strcpy(Descri23[0], "Um ataque que Cega o oponente.");
-    strcpy(Descri23[1], "");
-    strcpy(Descri23[2], "Luminoso, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Flashbang", "Status", Descri23, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsLight, 0, allElements[6], 'E', 100, 0, 0, 0, 0, 0, 'E', 0, EffNull, 100, allElements[6].StatusEffect);
-
-    char Descri24[3][255];
-    strcpy(Descri24[0], "Um golpe básico.");
-    strcpy(Descri24[1], "");
-    strcpy(Descri24[2], "Luminoso, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Carga Iluminada", "Físico", Descri24, "", DescAtiva, LearnPersonalitiesPhys, LearnElementsLight, 0, allElements[6], 'E', 100, 10, 30, 0, 0, 15, 'E', 0, EffNull, 0, EffNull);
-
-    char Descri25[3][255];
-    strcpy(Descri25[0], "Um golpe que diminui");
-    strcpy(Descri25[1], "ambos os ataques do oponente.");
-    strcpy(Descri25[2], "Luminoso, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Olhar Desconsertante", "Status", Descri25, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsLight, 0, allElements[6], 'E', 100, 0, 0, 0, 0, 0, 'E', 100, Eff5, 0, EffNull);
-        
-    char Descri26[3][255];
-    strcpy(Descri26[0], "Um ataque poderosíssimo");
-    strcpy(Descri26[1], "que nocauteia o usuário.");
-    strcpy(Descri26[2], "Luminoso, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Explosão Solar", "Mágico", Descri26, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsLight, 0, allElements[6], 'E', 100, 0, 0, 40, 0, 0, 'S', 0, EffNull, 100, EffKABOOM);
-        
-    char Descri27[3][255];
-    strcpy(Descri27[0], "Um golpe soterra o");
-    strcpy(Descri27[1], "oponente.");
-    strcpy(Descri27[2], "Mineral, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Soterragem", "Status", Descri27, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsStone, 0, allElements[8], 'E', 100, 0, 0, 0, 0, 0, 'E', 100, allElements[7].StatusEffect, 0, EffNull);    
-        
-    char Descri28[3][255];
-    strcpy(Descri28[0], "Um golpe que possui");
-    strcpy(Descri28[1], "mais chances de Critar.");
-    strcpy(Descri28[2], "Mineral, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Cacos de Pedra", "Físico", Descri28, "", DescAtiva, LearnPersonalitiesPhys, LearnElementsStone, 0, allElements[8], 'E', 100, 10, 15, 0, 0, 50, 'E', 0, EffNull, 0, EffNull);    
-        
-    char Descri29[3][255];
-    strcpy(Descri29[0], "Um golpe que possui");
-    strcpy(Descri29[1], "mais chances de Critar");
-    strcpy(Descri29[2], "Mineral, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Cacos de Pedra", "Mágico", Descri29, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsStone, 0, allElements[8], 'E', 100, 0, 0, 10, 15, 50, 'E', 0, EffNull, 0, EffNull);    
-        
-    char Descri30[3][255];
-    strcpy(Descri30[0], "Um golpe que aumenta a");
-    strcpy(Descri30[1], "Velocidade do usuário.");
-    strcpy(Descri30[2], "Mineral, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Cacos de Pedra", "Status", Descri30, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsStone, 0, allElements[8], 'E', 100, 0, 0, 0, 0, 0, 'S', 0, EffNull, 100, Eff6);  
-        
-    char Descri31[3][255];
-    strcpy(Descri31[0], "Um golpe básico.");
-    strcpy(Descri31[1], "");
-    strcpy(Descri31[2], "Gélido, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Frente Fria", "Físico", Descri31, "", DescAtiva, LearnPersonalitiesPhys, LearnElementsIce, 0, allElements[7], 'E', 100, 10, 20, 0, 0, 15, 'E', 0, EffNull, 0, EffNull);  
-
-    char Descri32[3][255];
-    strcpy(Descri32[0], "Um golpe que diminui as");
-    strcpy(Descri32[1], "Precisões do oponente.");
-    strcpy(Descri32[2], "Gélido, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Granizo", "Mágico", Descri32, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsIce, 0, allElements[7], 'E', 100, 0, 0, 10, 20, 15, 'E', 100, Eff7, 0, EffNull);  
-
-    char Descri33[3][255];
-    strcpy(Descri33[0], "Um golpe que dá Calafrios");
-    strcpy(Descri33[1], "ao oponente.");
-    strcpy(Descri33[2], "Gélido, Status");
-
-    AddSkill(&pSkills, &dataQuantities, "Hipotermizar", "Status", Descri33, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsIce, 0, allElements[7], 'E', 100, 0, 0, 0, 0, 0, 'E', 100, allElements[7].StatusEffect, 0, EffNull); 
-
-    char Descri34[3][255];
-    strcpy(Descri34[0], "Um golpe que pode Envenenar");
-    strcpy(Descri34[1], "o oponente.");
-    strcpy(Descri34[2], "Venenoso, Físico");
-
-    AddSkill(&pSkills, &dataQuantities, "Mordida Podre", "Físico", Descri34, "", DescAtiva, LearnPersonalitiesPhys, LearnElementsTox, 0, allElements[9], 'E', 100, 10, 10, 0, 0, 15, 'E', 50, allElements[9].StatusEffect, 0, EffNull); 
-        
-    char Descri35[3][255];
-    strcpy(Descri35[0], "Um golpe que pode Envenenar");
-    strcpy(Descri35[1], "o oponente.");
-    strcpy(Descri35[2], "Venenoso, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Cuspe Tóxico", "Mágico", Descri35, "", DescAtiva, LearnPersonalitiesMagic, LearnElementsTox, 0, allElements[9], 'E', 100, 0, 0, 10, 10, 15, 'E', 50, allElements[9].StatusEffect, 0, EffNull);     
-        
-    char Descri36[3][255];
-    strcpy(Descri36[0], "Um golpe que diminui as");
-    strcpy(Descri36[1], "Defesas do oponente.");
-    strcpy(Descri36[2], "Venenoso, Mágico");
-
-    AddSkill(&pSkills, &dataQuantities, "Sopro Neurotóxico", "Status", Descri36, "", DescAtiva, LearnPersonalitiesStatus, LearnElementsTox, 0, allElements[9], 'E', 100, 0, 0, 0, 0, 0, 'E', 100, Eff8, 0, EffNull);   
 
     SaveSkills(pSkills, dataQuantities.Skill, skills);
     SaveDataQuantity(dataQuantities, dataQuantity);*/
-
     //------------------------------------------------------------------------------------------------------------------//
 
     //Principal Do Usuário
@@ -2356,7 +3438,7 @@ int main(){
             getchar();
             EscolherSkills(&pPlayers[playerTwoIndex], pSkills, dataQuantities.Skill);
             getchar();
-            //Variaveis calcSkill
+            //Variaveis UseSkill
             bool SkillWasUsed = false;
             bool elementalEffectHit, skillHit, critHit, selfEffectHit, enemyEffectHit, usedItemStatusHit;
             int selfDamage, enemyDamage, usedSkillIndex;
@@ -2479,7 +3561,7 @@ int main(){
                                         if((int)userResponse - (int)'0' > -1 && (int)userResponse - (int)'0' < 4){
                                             respostaValida2 = true;
                                             SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerOnePicomon, (int)userResponse - (int)'0', selectedPlayerTwoPicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
+                                            UseSkill(allElements, selectedPlayerOnePicomon, (int)userResponse - (int)'0', selectedPlayerTwoPicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
                                         }
                                         else{
                                             printf("Comando digitado invalido, digite novamente");
@@ -2683,7 +3765,7 @@ int main(){
                                         if((int)userResponse - (int)'0' > -1 && (int)userResponse - (int)'0' < 4){
                                             respostaValida2 = true;
                                             SkillWasUsed = true;
-                                            CalcSkill(allElements, selectedPlayerTwoPicomon, (int)userResponse - (int)'0', selectedPlayerOnePicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
+                                            UseSkill(allElements, selectedPlayerTwoPicomon, (int)userResponse - (int)'0', selectedPlayerOnePicomon, &elementalEffectHit, &skillHit, &critHit, &selfEffectHit, &enemyEffectHit, &selfDamage, &enemyDamage);
                                         }
                                         else{
                                             printf("Comando digitado invalido, digite novamente");
@@ -3687,80 +4769,49 @@ void FreeAllHeapMemoryAndSaveEverything(SkPointer pSkills, ItPointer pItems, PiP
 
 //Manage Memory Functions
 //------------------------------------------------------------------------------//
-bool AddSkill(SkPointer *pSkills, DataQuantity *dataQuantities, char *name, char *type, char description[3][255], char *active, char activeDescription[3][255], bool learnablePersonalities[13], bool LearnableElements[10], int elementEffectHitChance, Element element, char target, int hitChance, int  attackBase, int attackScale, int magicBase, int magicAttackScale, int critChance, char effectTarget, int enemyEffectHitChance, Effect enemyEffect[8], int selfEffectHitChance, Effect selfEffect[8]){
+bool AddSkill(SkPointer *pSkills, DataQuantity *dataQuantities, Skill newSkill){
     //Se o memset estiver errado ele estara apagando memoria de outras variaveis;
-    if(pSkills == NULL){
-        perror("ERRO, \"pSkills\" não pode ser NULL em \"AddSkill\"");
-        return false;
-    }
-    if(name == NULL){
-        perror("ERRO, \"name\" não pode ser NULL em \"AddSkill\"");
-        return false;
-    }
-    if(target != 'S' && target != 'E' && target != 'B'){
-        perror("ERRO, \"target\" não pode ser diferente de 'S', 'E' ou 'B' em \"AddSkill\"");
-        return false;
-    }
-    if(elementEffectHitChance < 0){
-        perror("ERRO, \"elementEffectChance\" não pode ser menor que zero em \"AddSkill\"");
-        return false;
-    }
-    if(critChance < 0){
-        perror("ERRO, \"critChance\" não pode ser menor que zero em \"AddSkill\"");
-        return false;
-    }
-    if(effectTarget != 'S' && effectTarget != 'E' && effectTarget != 'B'){
-        perror("ERRO, \"effectTarget\" não pode ser diferente de 'S', 'E' ou 'B' em \"AddSkill\"");
-        return false;
-    }
-    if(enemyEffectHitChance < 0){
-        perror("ERRO, \"enemyEffectChance\" não pode ser menor que zero em \"AddSkill\"");
-        return false;
-    }
-    if(selfEffectHitChance < 0){
-        perror("ERRO, \"selfEffectChance\" não pode ser menor que zero em \"AddSkill\"");
-        return false;
-    }
 
     dataQuantities[0].Skill++;
     (*pSkills) = (SkPointer)realloc((*pSkills), dataQuantities[0].Skill * sizeof(Skill));
-    if(pSkills == NULL){
+    if((*pSkills) == NULL){
         perror("ERRO na realocacao de memoria em \"AddSkill\"");
         return false;
     }
     memset(&(*pSkills)[dataQuantities[0].Skill-1], 0, sizeof(Skill));
-    strcpy((*pSkills)[dataQuantities[0].Skill-1].Name, name);
-    strcpy((*pSkills)[dataQuantities[0].Skill-1].Type, type);
+    strcpy((*pSkills)[dataQuantities[0].Skill-1].Name, newSkill.Name);
+    strcpy((*pSkills)[dataQuantities[0].Skill-1].Type, newSkill.Type);
     int i;
     for(i = 0; i < 3; i++){
-        strcpy((*pSkills)[dataQuantities[0].Skill-1].Description[i], description[i]);
+        strcpy((*pSkills)[dataQuantities[0].Skill-1].Description[i], newSkill.Description[i]);
     }
-    strcpy((*pSkills)[dataQuantities[0].Skill-1].Active, active);
+    strcpy((*pSkills)[dataQuantities[0].Skill-1].Active, newSkill.Active);
     for(i = 0; i < 3; i++){
-        strcpy((*pSkills)[dataQuantities[0].Skill-1].ActiveDescription[i], activeDescription[i]);
+        strcpy((*pSkills)[dataQuantities[0].Skill-1].ActiveDescription[i], newSkill.ActiveDescription[i]);
     }
     for(i = 0; i < 13; i++){
-        (*pSkills)[dataQuantities[0].Skill-1].LearnablePersonalities[i] = learnablePersonalities[i];
+        (*pSkills)[dataQuantities[0].Skill-1].LearnablePersonalities[i] = newSkill.LearnablePersonalities[i];
     }
     for(i = 0; i < 10; i++){
-        (*pSkills)[dataQuantities[0].Skill-1].LearnableElements[i] = LearnableElements[i];
+        (*pSkills)[dataQuantities[0].Skill-1].LearnableElements[i] = newSkill.LearnableElements[i];
     }
-    (*pSkills)[dataQuantities[0].Skill-1].ElementEffectHitChance = elementEffectHitChance;
-    (*pSkills)[dataQuantities[0].Skill-1].Element = element;
-    (*pSkills)[dataQuantities[0].Skill-1].Target = target;
-    (*pSkills)[dataQuantities[0].Skill-1].AttackBase = attackBase;
-    (*pSkills)[dataQuantities[0].Skill-1].AttackScale = attackScale;
-    (*pSkills)[dataQuantities[0].Skill-1].MagicBase = magicBase;
-    (*pSkills)[dataQuantities[0].Skill-1].MagicAttackScale = magicAttackScale;
-    (*pSkills)[dataQuantities[0].Skill-1].CritChance = critChance;
-    (*pSkills)[dataQuantities[0].Skill-1].EffectTarget = effectTarget;
-    (*pSkills)[dataQuantities[0].Skill-1].EnemyEffectHitChance = enemyEffectHitChance;
+    (*pSkills)[dataQuantities[0].Skill-1].ElementEffectHitChance = newSkill.ElementEffectHitChance;
+    (*pSkills)[dataQuantities[0].Skill-1].Element = newSkill.Element;
+    (*pSkills)[dataQuantities[0].Skill-1].Target = newSkill.Target;
+    (*pSkills)[dataQuantities[0].Skill-1].HitChance = newSkill.HitChance;
+    (*pSkills)[dataQuantities[0].Skill-1].AttackBase = newSkill.AttackBase;
+    (*pSkills)[dataQuantities[0].Skill-1].AttackScale = newSkill.AttackScale;
+    (*pSkills)[dataQuantities[0].Skill-1].MagicBase = newSkill.MagicBase;
+    (*pSkills)[dataQuantities[0].Skill-1].MagicAttackScale = newSkill.MagicAttackScale;
+    (*pSkills)[dataQuantities[0].Skill-1].CritChance = newSkill.CritChance;
+    (*pSkills)[dataQuantities[0].Skill-1].EffectTarget = newSkill.EffectTarget;
+    (*pSkills)[dataQuantities[0].Skill-1].EnemyEffectHitChance = newSkill.EnemyEffectHitChance;
     for(i = 0; i < 8; i++){
-        (*pSkills)[dataQuantities[0].Skill-1].EnemyEffect[i] = enemyEffect[i];
+        (*pSkills)[dataQuantities[0].Skill-1].EnemyEffect[i] = newSkill.EnemyEffect[i];
     }
-    (*pSkills)[dataQuantities[0].Skill-1].SelfEffectHitChance = selfEffectHitChance;
+    (*pSkills)[dataQuantities[0].Skill-1].SelfEffectHitChance = newSkill.SelfEffectHitChance;
     for(i = 0; i < 8; i++){
-        (*pSkills)[dataQuantities[0].Skill-1].SelfEffect[i] = selfEffect[i];
+        (*pSkills)[dataQuantities[0].Skill-1].SelfEffect[i] = newSkill.SelfEffect[i];
     }
     return true;
 }
@@ -3837,47 +4888,43 @@ bool AddItem(ItPointer *pItems, DataQuantity *dataQuantities, char *name, char *
 
 }
 
-bool AddPikomon(PiPointer pPikomons, DataQuantity *dataQuantities, Pikomon newPikomon){
-    if(pPikomons == NULL){
-        perror("ERRO, \"pPikomons\" não pode ser NULL em \"AddPikomon\"");
-        return false;
-    }
-
+bool AddPikomon(PiPointer *pPikomons, DataQuantity *dataQuantities, Pikomon newPikomon){
+    
     dataQuantities[0].Pikomon++;
-    pPikomons = (PiPointer)realloc(pPikomons, dataQuantities[0].Pikomon * sizeof(Pikomon));
-    if(pPikomons == NULL){
+    (*pPikomons) = (PiPointer)realloc((*pPikomons), dataQuantities[0].Pikomon * sizeof(Pikomon));
+    if((*pPikomons) == NULL){
         perror("ERRO na realocacao de memoria em \"AddPikomon\"");
         return false;
     }
-    memset(&pPikomons[dataQuantities[0].Pikomon-1], 0, sizeof(Pikomon));
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Name, newPikomon.Name);
-    pPikomons[dataQuantities[0].Pikomon-1].Element = newPikomon.Element;
+    memset(&(*pPikomons)[dataQuantities[0].Pikomon-1], 0, sizeof(Pikomon));
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Name, newPikomon.Name);
+    (*pPikomons)[dataQuantities[0].Pikomon-1].Element = newPikomon.Element;
     int i;
     for(i = 0; i < 7; i++){
-        strcpy(pPikomons[dataQuantities[0].Pikomon-1].IconImg[i], newPikomon.IconImg[i]);
+        strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].IconImg[i], newPikomon.IconImg[i]);
     }
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Passive, newPikomon.Passive);
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Passive, newPikomon.Passive);
     for(i = 0; i < 3; i++){
-        strcpy(pPikomons[dataQuantities[0].Pikomon-1].PassiveDescription[i], newPikomon.PassiveDescription[i]);
+        strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].PassiveDescription[i], newPikomon.PassiveDescription[i]);
     }
-    pPikomons[dataQuantities[0].Pikomon-1].Value = newPikomon.Value;
+    (*pPikomons)[dataQuantities[0].Pikomon-1].Value = newPikomon.Value;
     
     for(i = 0; i < 8; i++){
-        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].Base = newPikomon.Atributes[i].Base;
-        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].acronym = NULL;
-        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].Bonus = NULL;
-        pPikomons[dataQuantities[0].Pikomon-1].Atributes[i].BonusTimer = NULL;
+        (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[i].Base = newPikomon.Atributes[i].Base;
+        (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[i].acronym = NULL;
+        (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[i].Bonus = NULL;
+        (*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[i].BonusTimer = NULL;
     }
-    pPikomons[dataQuantities[0].Pikomon-1].CurrentHP.Base = 0;
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].CurrentHP.Name, "CurrentHP");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[0].Name, "HP");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[1].Name, "Defense");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[2].Name, "MagicDefense");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[3].Name, "Accuracy");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[4].Name, "Attack");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[5].Name, "ElementalAccuracy");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[6].Name, "MagicAttack");
-    strcpy(pPikomons[dataQuantities[0].Pikomon-1].Atributes[7].Name, "Speed");
+    (*pPikomons)[dataQuantities[0].Pikomon-1].CurrentHP.Base = 0;
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].CurrentHP.Name, "CurrentHP");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[0].Name, "HP");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[1].Name, "Defense");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[2].Name, "MagicDefense");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[3].Name, "Accuracy");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[4].Name, "Attack");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[5].Name, "ElementalAccuracy");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[6].Name, "MagicAttack");
+    strcpy((*pPikomons)[dataQuantities[0].Pikomon-1].Atributes[7].Name, "Speed");
     return true;
 }
 
@@ -3914,8 +4961,8 @@ bool AddPlayer(PlPointer *pPlayers, DataQuantity *dataQuantities, char *name, ch
     return true;
 }
 
-bool AddItemPlayerBag(PlPointer pPlayers, int playerIndex, ItPointer pItems, int itemIndex){
-    if (pPlayers == NULL || pPlayers == NULL) {
+bool AddItemPlayerBag(PlPointer *pPlayers, int playerIndex, ItPointer pItems, int itemIndex){
+    if ((*pPlayers) == NULL) {
         perror("ERRO, \"pPlayers\" não pode ser NULL em \"AddItemPlayerBag\"");
         return false;
     }
@@ -3933,15 +4980,15 @@ bool AddItemPlayerBag(PlPointer pPlayers, int playerIndex, ItPointer pItems, int
     }
 
     // Aumenta o tamanho atual da bag do jogador
-    pPlayers[playerIndex].BagCurrentSize++;
-    pPlayers[playerIndex].Bag = (ItPointer)realloc(pPlayers[playerIndex].Bag, pPlayers[playerIndex].BagCurrentSize * sizeof(Item));
-    if (pPlayers[playerIndex].Bag == NULL) {
+    (*pPlayers)[playerIndex].BagCurrentSize++;
+    (*pPlayers)[playerIndex].Bag = (ItPointer)realloc((*pPlayers)[playerIndex].Bag, (*pPlayers)[playerIndex].BagCurrentSize * sizeof(Item));
+    if ((*pPlayers)[playerIndex].Bag == NULL) {
         perror("ERRO na realocação de memória em \"AddItemPlayerBag\"");
         return false;
     }
 
     // Adiciona o item à bag do jogador
-    pPlayers[playerIndex].Bag[pPlayers[playerIndex].BagCurrentSize - 1] = pItems[itemIndex];
+    (*pPlayers)[playerIndex].Bag[(*pPlayers)[playerIndex].BagCurrentSize - 1] = pItems[itemIndex];
     return true; 
 }
 
@@ -4190,7 +5237,7 @@ void CalcNextTurn(Pikomon selfPikomon, Pikomon enemyPikomon, char *calcNextTurn)
     }
 }
 
-void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPointer defenser, bool *elementalEffectHit, bool *skillHit, bool *critHit, bool *selfEffectHit, bool *enemyEffectHit, int *selfDamage, int *enemyDamage){
+void UseSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPointer defenser, bool *elementalEffectHit, bool *skillHit, bool *critHit, bool *selfEffectHit, bool *enemyEffectHit, int *selfDamage, int *enemyDamage){
     int I, J, bonusQuantity, randChance = 0;
     double elementalEffectivness;
     double physicalDamageReduction, magicDamageReduction;
@@ -4359,7 +5406,7 @@ void CalcSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoi
     //para debug
     printf("Basic:\n");
     printf("elementalEffectHit: %s  skillHit: %s   critHit: %s  selfEffectHit: %s  enemyEffectHit: %s\n selfDamage: %d  enemyDamage: %d\n", *elementalEffectHit ? "True":"False", *skillHit ? "True":"False", *critHit ? "True":"False", *selfEffectHit ? "True":"False", *enemyEffectHit ? "True":"False", *selfDamage, *enemyDamage);
-    printf("atacker.Name: %s\nskillIndex: %d\ndefenser: defenser.Name\n\n", atacker[0].Name, skillIndex, defenser[0].Name);
+    printf("atacker.Name: %s\nskillIndex: %d\ndefenser: %s\n\n", atacker[0].Name, skillIndex, defenser[0].Name);
     getchar();
     getchar();
 }
@@ -4909,7 +5956,7 @@ bool ShopItems(PlPointer players, int playerAtualIndex, ItPointer pItems, DataQu
         return false;
     }
 
-    if (!AddItemPlayerBag(players, playerAtualIndex, pItems, itemEscolha))
+    if (!AddItemPlayerBag(&players, playerAtualIndex, pItems, itemEscolha))
     {
         printf("Falha ao adicionar o item ao inventário. Tente novamente.\n");
         getchar();
