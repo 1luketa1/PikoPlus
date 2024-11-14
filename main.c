@@ -3462,16 +3462,25 @@ int main(){
                     {
                         if (critHit)
                         {
-                            printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
+                            printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo\n", enemyDamage, selfDamage);
                         }
                         else
                         {
-                            printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
+                            printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo\n", enemyDamage, selfDamage);
                         }
                     }
                     else
                     {
-                        printf("O pikomon errou...");
+                        printf("O pikomon errou o golpe\n...");
+                    }
+                    if(elementalEffectHit){
+                        printf("O pikomon acertou o efeito elemental\n...");
+                    }
+                    if(selfEffectHit){
+                        printf("O pikomon acertou o selfEffect\n...");
+                    }
+                    if(enemyEffectHit){
+                        printf("O pikomon  acertou o enemyEffect\n...");
                     }
                     getchar();
                     getchar();
@@ -3487,7 +3496,6 @@ int main(){
                     getchar();
                     getchar();
                 }
-                printf("reset: %s", reset ? "true" : "false");
                 if(reset){
                     reset = false;
                     selectedPlayerOnePicomon[0].ChargedSpeed = 0;
@@ -3505,22 +3513,35 @@ int main(){
                     reset = true;
                 }
                 if(playerOneTurn){
-                    printf("TURNO DO P1");
                     selectedPlayerOnePicomon[0].ChargedSpeed += selectedPlayerOnePicomon[0].Atributes[7].Total;
                     while(selectedPlayerOnePicomon[0].ChargedSpeed - turnCost >= 0){
+                        printf("TURNO DO P1\n\n");
                         selectedPlayerOnePicomon[0].ChargedSpeed -= turnCost;
                         if(SkillWasUsed){
                             SkillWasUsed = false;
-                            if (skillHit){
-                                if (critHit){
-                                    printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
+                            if (skillHit)
+                            {
+                                if (critHit)
+                                {
+                                    printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo\n", enemyDamage, selfDamage);
                                 }
-                                else{
-                                    printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
+                                else
+                                {
+                                    printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo\n", enemyDamage, selfDamage);
                                 }
                             }
-                            else{
-                                printf("O pikomon errou...");
+                            else
+                            {
+                                printf("O pikomon errou o golpe\n...");
+                            }
+                            if(elementalEffectHit){
+                                printf("O pikomon acertou o efeito elemental\n...");
+                            }
+                            if(selfEffectHit){
+                                printf("O pikomon acertou o selfEffect\n...");
+                            }
+                            if(enemyEffectHit){
+                                printf("O pikomon  acertou o enemyEffect\n...");
                             }
                             getchar();
                             getchar();
@@ -3700,14 +3721,12 @@ int main(){
                         }
 
                     }
-                    printf("É PRA TROCA O TURNO\n");
                     playerOneTurn = false;
-                    printf("playerOneTurn: %s\n", playerOneTurn ? "true" : "false");
                 }
                 else{
-                    printf("TURNO DO P2");
                     selectedPlayerTwoPicomon[0].ChargedSpeed += selectedPlayerTwoPicomon[0].Atributes[7].Total;
                     while(selectedPlayerTwoPicomon[0].ChargedSpeed - turnCost >= 0){
+                        printf("TURNO DO P2\n\n");
                         selectedPlayerTwoPicomon[0].ChargedSpeed -= turnCost;
                         if(SkillWasUsed){
                             SkillWasUsed = false;
@@ -3715,19 +3734,28 @@ int main(){
                             {
                                 if (critHit)
                                 {
-                                    printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
+                                    printf("O pikomon acertou um critico! Causando %d ao pokemon inimigo e causando %d a si mesmo\n", enemyDamage, selfDamage);
                                 }
                                 else
                                 {
-                                    printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo", enemyDamage, selfDamage);
+                                    printf("O pikomon acertou causando %d ao pokemon inimigo e causando %d a si mesmo\n", enemyDamage, selfDamage);
                                 }
                             }
                             else
                             {
-                                printf("O pikomon errou...");
+                                printf("O pikomon errou o golpe\n...");
+                            }
+                            if(elementalEffectHit){
+                                printf("O pikomon acertou o efeito elemental\n...");
+                            }
+                            if(selfEffectHit){
+                                printf("O pikomon acertou o selfEffect\n...");
+                            }
+                            if(enemyEffectHit){
+                                printf("O pikomon  acertou o enemyEffect\n...");
                             }
                             getchar();
-                            getchar();                        
+                            getchar();
                         }
                         if(ItemWasUsed){
                             ItemWasUsed = false;
@@ -3903,9 +3931,7 @@ int main(){
                         }
 
                     }
-                    printf("É PRA TROCA O TURNO\n");
                     playerOneTurn = true;
-                    printf("playerOneTurn: %s\n", playerOneTurn ? "true" : "false");
                 }
             }
             if(playerOneVictory){
@@ -5238,29 +5264,45 @@ void CalcNextTurn(Pikomon selfPikomon, Pikomon enemyPikomon, char *calcNextTurn)
 }
 
 void UseSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPointer defenser, bool *elementalEffectHit, bool *skillHit, bool *critHit, bool *selfEffectHit, bool *enemyEffectHit, int *selfDamage, int *enemyDamage){
-    int I, J, bonusQuantity, randChance = 0;
+    int I, J, bonusQuantity, randChance = 0, hitChance;
     double elementalEffectivness;
     double physicalDamageReduction, magicDamageReduction;
+    struct timespec tempo;
+    tempo.tv_sec = 0; 
+    tempo.tv_nsec = 200000000;
     SkPointer usedSkill = &atacker[0].Skills[skillIndex];
     *selfDamage = 0;
     *enemyDamage = 0;
 
     //Info na chamada da função(para debug)
-    printf("Basic:\n");
+    /*printf("Basic:\n");
     printf("elementalEffectHit: %s  skillHit: %s   critHit: %s  selfEffectHit: %s  enemyEffectHit: %s\n selfDamage: %d  enemyDamage: %d\n", *elementalEffectHit ? "True":"False", *skillHit ? "True":"False", *critHit ? "True":"False", *selfEffectHit ? "True":"False", *enemyEffectHit ? "True":"False", *selfDamage, *enemyDamage);
     printf("atacker.Name: %s\n  skillIndex: %d  defenser.Name: %s\n\n", atacker[0].Name, skillIndex, defenser[0].Name);
     getchar();
-    getchar();
+    getchar();*/
 
     randChance = (rand() % 100)+1;
-    printf("elementalEffectHit?\n\n");
-    printf("randChance: %d <= usedSkill[0].ElementEffectHitChance: %d * atacker[0].Atributes[5].Total: %d / 100 ?????", randChance, usedSkill[0].ElementEffectHitChance, atacker[0].Atributes[5].Total);
-    if(randChance <= ((double)usedSkill[0].ElementEffectHitChance) * ((double)atacker[0].Atributes[5].Total)/100.0){
+    hitChance = (int)(usedSkill[0].ElementEffectHitChance * atacker[0].Atributes[5].Total/100.0);
+    if(hitChance > 0){
+        printf("\n\n| Elemental effect hit chance: | %3d | |\n\n", hitChance);
+        nanosleep(&tempo, NULL);
+        printf("| %3d |\n",(rand() % 100)+1);
+        for(int i = 0; i < 4; i++){
+            LimparTerminal();
+            printf("\n\n| Elemental effect hit chance: | %3d | |\n\n", hitChance);
+            tempo.tv_nsec += 50000000;
+            nanosleep(&tempo, NULL);
+            printf("| %3d |\n",(rand() % 100)+1);
+        }
+        LimparTerminal();
+        printf("\n\n| Elemental effect hit chance: | %3d | |\n\n", hitChance);
+        nanosleep(&tempo, NULL);
+        printf("| %3d |\n", randChance);
+        tempo.tv_nsec /= 2;
+    }
+    if(randChance <= hitChance){
         *elementalEffectHit = true;
         //Debug
-        printf("elementalEffectHit\n\n");
-        getchar();
-        getchar();
         physicalDamageReduction = 1.0 - (DefenseReductionCalc(defenser[0].Atributes[1].Total) * 0.11);
         magicDamageReduction = 1.0 - (DefenseReductionCalc(defenser[0].Atributes[2].Total) * 0.11);
         elementalEffectivness = (double)usedSkill[0].Element.Effectiveness[defenser[0].Element.SelfElementIndex] / 100.0;
@@ -5296,14 +5338,26 @@ void UseSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoin
 
 
     randChance = (rand() % 100)+1;
-    printf("elementalEffectHit?\n\n");
-    printf("randChance: %d <= atacker[0].Atributes[3].Total: %d * usedSkill[0].HitChance: %d / 100 ?????", randChance, atacker[0].Atributes[3].Total, usedSkill[0].HitChance);
-    if(randChance <= (double)atacker[0].Atributes[3].Total * (double)usedSkill[0].HitChance / 100.0){
+    hitChance = (int)(atacker[0].Atributes[3].Total * usedSkill[0].HitChance / 100.0);
+    if(hitChance > 0){
+        printf("\n\n| Skill hit chance: | %3d | |\n\n", hitChance);
+        printf("| %3d |\n",(rand() % 100)+1);
+        nanosleep(&tempo, NULL);
+        for(int i = 0; i < 4; i++){
+            LimparTerminal();
+            printf("\n\n| Skill hit chance: | %3d | |\n\n", hitChance);
+            tempo.tv_nsec += 50000000;
+            printf("| %3d |\n",(rand() % 100)+1);
+            nanosleep(&tempo, NULL);
+        }
+        LimparTerminal();
+        printf("\n\n| Skill hit chance: | %3d | |\n\n", hitChance);
+        printf("| %3d |\n", randChance);
+        nanosleep(&tempo, NULL);
+        tempo.tv_nsec /= 2;
+    }
+    if(randChance <= hitChance){
         *skillHit = true;
-        //Debug
-        printf("skillHit\n\n");
-        getchar();
-        getchar();
         int magicDamage, physicalDamage;
         if((rand() % 100 +1) <= usedSkill[0].CritChance) *critHit = true;
 
@@ -5351,14 +5405,27 @@ void UseSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoin
 
 
     randChance = (rand() % 100)+1;
-    printf("elementalEffectHit?\n\n");
-    printf("randChance: %d <= usedSkill[0].SelfEffectHitChance: %d ?????", randChance, usedSkill[0].SelfEffectHitChance);
-    if(randChance <= usedSkill[0].SelfEffectHitChance){
+    hitChance = usedSkill[0].SelfEffectHitChance;
+    if(hitChance > 0){
+        printf("\n\n| Self effect hit chance: | %3d | |\n\n", hitChance);
+        printf("| %3d |\n",(rand() % 100)+1);
+        nanosleep(&tempo, NULL);
+        for(int i = 0; i < 4; i++){
+            LimparTerminal();
+            printf("\n\n| Self effect hit chance: | %3d | |\n\n", hitChance);
+            tempo.tv_nsec += 50000000;
+            printf("| %3d |\n",(rand() % 100)+1);
+            nanosleep(&tempo, NULL);
+        }
+        LimparTerminal();
+        printf("\n\n| Self effect hit chance: | %3d | |\n\n", hitChance);
+        printf("| %3d |\n", randChance);
+        nanosleep(&tempo, NULL);
+        tempo.tv_nsec /= 2;
+    }
+    if(randChance <= hitChance){
         *selfEffectHit = true;
         //Debug
-        printf("selfEffectHit\n\n");
-        getchar();
-        getchar();
         for (I = 0; I < 8; I++){
             if(usedSkill[0].Element.StatusEffect[I].Timer > 0){
                 atacker[0].Atributes[I].BonusQuantity++;
@@ -5378,14 +5445,27 @@ void UseSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoin
 
 
     randChance = (rand() % 100)+1;
-    printf("elementalEffectHit?\n\n");
-    printf("randChance: %d <= usedSkill[0].EnemyEffectHitChance: %d ?????", randChance, usedSkill[0].EnemyEffectHitChance);
-    if(randChance <= usedSkill[0].EnemyEffectHitChance){
+    hitChance = usedSkill[0].EnemyEffectHitChance;
+    if(hitChance > 0){
+        printf("\n\n| Enemy effect hit chance: | %3d | |\n\n", hitChance);
+        printf("| %3d |\n",(rand() % 100)+1);
+        nanosleep(&tempo, NULL);
+        for(int i = 0; i < 4; i++){
+            LimparTerminal();
+            printf("\n\n| Enemy effect hit chance: | %3d | |\n\n", hitChance);
+            tempo.tv_nsec += 50000000;
+            printf("| %3d |\n",(rand() % 100)+1);
+            nanosleep(&tempo, NULL);
+        }
+        LimparTerminal();
+        printf("\n\n| Enemy effect hit chance: | %3d | |\n\n", hitChance);
+        printf("| %3d |\n", randChance);
+        nanosleep(&tempo, NULL);
+        tempo.tv_nsec /= 2;
+    }
+    if(randChance <= hitChance){
         *enemyEffectHit = true;
         //Debug
-        printf("enemyEffectHit\n\n");
-        getchar();
-        getchar();
         for (I = 0; I < 8; I++){
             if(usedSkill[0].Element.StatusEffect[I].Timer > 0){
                 defenser[0].Atributes[I].BonusQuantity++;
@@ -5404,11 +5484,11 @@ void UseSkill(Element allElements[10], PiPointer atacker, int skillIndex, PiPoin
     else *enemyEffectHit = false;
 
     //para debug
-    printf("Basic:\n");
+    /*printf("Basic:\n");
     printf("elementalEffectHit: %s  skillHit: %s   critHit: %s  selfEffectHit: %s  enemyEffectHit: %s\n selfDamage: %d  enemyDamage: %d\n", *elementalEffectHit ? "True":"False", *skillHit ? "True":"False", *critHit ? "True":"False", *selfEffectHit ? "True":"False", *enemyEffectHit ? "True":"False", *selfDamage, *enemyDamage);
     printf("atacker.Name: %s\nskillIndex: %d\ndefenser: %s\n\n", atacker[0].Name, skillIndex, defenser[0].Name);
     getchar();
-    getchar();
+    getchar();*/
 }
 
 void UseItem(PlPointer selfPlayer, PlPointer enemyPlayer, int itemUsedIndex, bool *usedItemStatusHit){
@@ -5743,7 +5823,6 @@ void Menu(){
     struct timespec tempo;
     tempo.tv_sec = 0;              
     tempo.tv_nsec = 200000000;
-
 
 
 
